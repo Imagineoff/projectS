@@ -12,77 +12,80 @@
   
   <style>
     :root {
-      --bg: #ffffff;
-      --fg: #050505;
+      --bg: #050505; /* Temné pozadí pro "vesmírný" look */
+      --fg: #ffffff;
       --accent: #FFC700; 
-      --ease-apple: cubic-bezier(0.25, 1, 0.5, 1);
+      --glass: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.1);
+      --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
     }
 
     html, body { 
       margin: 0; 
       padding: 0; 
-      overflow-x: hidden; 
       width: 100%;
-    }
-    
-    body {
-      min-height: 100vh;
-      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
       color: var(--fg);
-      background: var(--bg);
-      background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
-      background-size: 30px 30px;
-      -webkit-font-smoothing: antialiased;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden; /* Zabrání horizontálnímu scrollu */
+      scroll-behavior: smooth;
+    }
+
+    body {
+      /* Jemná mřížka na pozadí pro hloubku */
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
     }
 
     .wrap { 
-      max-width: 1080px; 
+      max-width: 1100px; 
       margin: 0 auto; 
       padding: 0 20px; 
       position: relative; 
       z-index: 2;
     }
 
-    /* Apple-style floating animations */
-    .reveal-fx {
+    /* --- APPLE STYLE 3D ANIMACE --- */
+    .apple-reveal {
       opacity: 0;
-      transform: translateY(40px) scale(0.96);
+      transform: perspective(1000px) translate3d(0, 100px, -100px) rotateX(20deg);
       filter: blur(10px);
-      transition: opacity 1.2s var(--ease-apple), transform 1.2s var(--ease-apple), filter 1.2s var(--ease-apple);
-      will-change: opacity, transform, filter;
+      transition: all 1s var(--ease-out-quart);
+      will-change: transform, opacity, filter;
     }
 
-    .reveal-fx.visible {
+    .apple-reveal.in-view {
       opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0);
+      transform: perspective(1000px) translate3d(0, 0, 0) rotateX(0deg);
+      filter: blur(0px);
     }
-
-    /* Stagger delays if needed */
-    .delay-100 { transition-delay: 0.1s; }
-    .delay-200 { transition-delay: 0.2s; }
+    
+    /* Pokud odscrolluješ, třída se odebere a animace se přehraje pozpátku (Time Travel effect) */
 
     header { 
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      padding: 30px 0; 
+      padding: 40px 0; 
       position: relative;
-      z-index: 10;
+      z-index: 100;
     }
 
     .brand { 
       display: flex; 
       align-items: center; 
-      gap: 12px; 
+      gap: 15px; 
       text-decoration: none; 
       color: var(--fg); 
     }
     
     .brand img { 
-      width: 45px; 
-      height: 45px; 
+      width: 50px; 
+      height: 50px; 
       object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(255, 199, 0, 0.3));
     }
     
     .brand-text { 
@@ -90,139 +93,167 @@
       font-size: 24px; 
       font-weight: 800; 
       text-transform: uppercase; 
+      letter-spacing: 1px;
     }
 
-    .nav-links { display: flex; gap: 10px; }
+    .nav-links { display: flex; gap: 15px; }
     
     .social-btn {
       display: flex; 
       align-items: center; 
       justify-content: center;
-      width: 40px; 
-      height: 40px; 
+      width: 45px; 
+      height: 45px; 
       border-radius: 50%;
-      background: #000; 
+      background: rgba(255,255,255,0.1); 
       color: #fff; 
-      transition: 0.3s var(--ease-apple); 
+      transition: 0.3s; 
       text-decoration: none;
+      border: 1px solid var(--border);
     }
     
     .social-btn:hover { 
-      transform: scale(1.15); 
+      transform: scale(1.1); 
       background: var(--accent); 
       color: #000; 
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent);
     }
     
-    .social-btn svg { width: 18px; height: 18px; fill: currentColor; }
+    .social-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
+    /* --- BUS STAGE --- */
     .bus-stage {
       position: relative; 
       width: 100%; 
-      height: 250px;
-      margin-top: 20px;
-      margin-bottom: 40px; 
-      overflow: visible;
+      height: 300px; /* Více místa pro světla */
+      margin: 40px 0 80px 0;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
+      justify-content: center;
+      perspective: 1000px;
     }
 
     .bus-container { 
       position: relative;
-      will-change: transform; 
-      cursor: pointer;
-      display: inline-block;
-      transform: translate3d(-100px, 0, 0); 
+      width: auto;
+      transform: translate3d(0,0,0);
+      /* Defaultně posunuto doleva, JS to přepíše */
     }
     
     .bus-obj { 
-      height: 180px; 
+      height: 220px; 
       width: auto; 
       display: block; 
-      filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.2));
+      filter: drop-shadow(0px 20px 30px rgba(0,0,0,0.5));
       position: relative;
-      z-index: 2;
+      z-index: 5;
     }
     
-    /* LIGHTS CONFIGURATION */
-    .headlight-group {
+    /* --- SVĚTLA (THE BEAMS) --- */
+    /* Kontejner pro světla ukotvený k předku autobusu */
+    .lights-container {
       position: absolute;
-      top: 48%; 
-      right: -5%; /* Posunuto vice dopredu pred autobus */
-      width: 200px;
-      height: 100px;
+      top: 68%; /* Vertikální poloha světel na obrázku */
+      right: 2%; /* Horizontální poloha - čumák autobusu */
+      width: 0;
+      height: 0;
+      z-index: 4;
       pointer-events: none;
-      z-index: 1;
-      transform-origin: center left;
+    }
+
+    /* Samotný kužel světla */
+    .headlight-beam {
+      position: absolute;
+      top: -150px; /* Vycentrování kužele vůči bodu */
+      left: -20px; 
+      width: 600px; /* Dosah světla */
+      height: 300px;
+      background: radial-gradient(ellipse at left, rgba(255, 230, 100, 0.6) 0%, rgba(255, 199, 0, 0.1) 40%, transparent 70%);
+      transform-origin: 0% 50%;
+      transform: rotate(-5deg); /* Mírný náklon dolů na silnici */
       opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    /* Svetelny kuzel */
-    .beam {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: conic-gradient(from 255deg at 0% 50%, rgba(255, 230, 100, 0) 0deg, rgba(255, 230, 100, 0.4) 15deg, rgba(255, 230, 100, 0) 30deg);
+      mix-blend-mode: screen;
       filter: blur(8px);
-      mix-blend-mode: screen;
+      transition: opacity 0.2s ease-in-out;
     }
 
-    /* Zare primo na svetle */
-    .flare {
+    /* Záře přímo na lampě */
+    .lens-flare {
       position: absolute;
-      top: 40%;
-      left: -10px;
-      width: 40px;
-      height: 40px;
-      background: radial-gradient(circle, #fff 0%, #ffc700 40%, transparent 70%);
-      filter: blur(4px);
+      top: -25px;
+      left: -25px;
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle, #fff 10%, #FFC700 50%, transparent 70%);
       mix-blend-mode: screen;
+      filter: blur(5px);
+      opacity: 0;
+      transition: opacity 0.1s;
     }
 
-    /* Aktivace svetel */
-    .bus-container.lights-on .headlight-group { opacity: 1; }
+    /* Třída pro rozsvícení */
+    .lights-on .headlight-beam,
+    .lights-on .lens-flare {
+      opacity: 1;
+    }
 
+    /* --- HERO TEXT --- */
     .hero-content { 
-      margin-bottom: 100px; 
+      margin-bottom: 120px; 
       text-align: left; 
     }
     
     h1 { 
       font-family: 'Kanit', sans-serif; 
-      font-size: clamp(36px, 8vw, 64px); 
-      line-height: 1.1; 
-      margin: 0 0 30px 0; 
-      letter-spacing: -1px;
+      font-size: clamp(40px, 8vw, 80px); 
+      line-height: 1; 
+      margin: 0 0 40px 0; 
+      background: linear-gradient(to right, #fff, #aaa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .text-block { 
-      font-size: 18px; 
+      font-size: 20px; 
       line-height: 1.6; 
-      color: #333; 
+      color: #ccc; 
       max-width: 800px; 
     }
 
+    .text-block p { margin-bottom: 20px; }
+
+    /* --- GRID --- */
     .grid-section { 
       display: grid; 
-      grid-template-columns: 1.2fr 1fr; 
-      gap: 40px; 
-      margin-bottom: 100px; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 60px; 
+      margin-bottom: 150px; 
     }
 
     .card {
-      background: #fff; 
-      border: 3px solid #000; 
-      padding: 30px;
-      box-shadow: 12px 12px 0 #000; 
+      background: linear-gradient(145deg, rgba(20,20,20,1) 0%, rgba(30,30,30,1) 100%);
+      border: 1px solid var(--border);
+      padding: 40px;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.5;
     }
 
     .typewriter-title {
       font-family: 'Kanit'; 
-      font-size: 28px; 
+      font-size: 32px; 
       text-transform: uppercase;
       margin: 0 0 20px 0; 
+      color: var(--accent);
       border-right: 4px solid var(--accent);
       width: fit-content; 
       white-space: nowrap; 
@@ -231,55 +262,62 @@
 
     .discord-widget-container {
       width: 100%; 
-      height: 450px; 
+      height: 500px; 
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
       background: #000;
-      box-shadow: 12px 12px 0 #000; 
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
     }
 
     .btn-discord {
-      display: flex; 
+      display: inline-flex; 
       align-items: center; 
       justify-content: center; 
-      gap: 10px;
+      gap: 12px;
       background: #5865F2; 
       color: #fff; 
-      padding: 20px; 
+      padding: 18px 30px; 
       font-weight: 800;
       text-decoration: none; 
-      border: 3px solid #000; 
+      border-radius: 12px;
       margin-top: 30px; 
-      transition: 0.3s var(--ease-apple);
+      transition: 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
     
     .btn-discord:hover { 
-      background: #fff; 
-      color: #5865F2; 
-      transform: translate(-4px, -4px); 
-      box-shadow: 6px 6px 0 #000; 
+      background: #4752c4; 
+      box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
+      transform: translateY(-2px);
     }
 
     footer {
-      padding: 40px 0; 
+      padding: 60px 0; 
       text-align: center; 
-      border-top: 2px solid #000; 
+      border-top: 1px solid var(--border); 
       font-weight: 600;
-      background: #fff;
+      color: #666;
+      font-size: 14px;
     }
 
+    /* --- RESPONSIVE --- */
     @media (max-width: 850px) {
       .grid-section { grid-template-columns: 1fr; }
-      header { flex-direction: column; gap: 20px; }
-      .bus-obj { height: 110px; }
-      .bus-stage { height: 140px; margin-bottom: 20px; }
-      .headlight-group { top: 46%; width: 120px; right: -15%; } 
-      .card, .discord-widget-container { box-shadow: 6px 6px 0 #000; }
+      .bus-obj { height: 140px; }
+      .bus-stage { height: 180px; }
+      
+      /* Úprava pozice světel pro menší verzi */
+      .lights-container { top: 68%; right: 2%; }
+      .headlight-beam { width: 300px; height: 150px; top: -75px; }
     }
   </style>
 </head>
 <body>
 
 <div class="wrap">
-  <header class="reveal-fx">
+  <header class="apple-reveal">
     <a href="#" class="brand">
       <img src="https://i.imgur.com/tCvSBHQ.png" alt="Logo">
       <div class="brand-text">Kladenské dílny</div>
@@ -294,26 +332,26 @@
     </div>
   </header>
 
-  <div class="bus-stage reveal-fx delay-100" id="bus-stage">
+  <div class="bus-stage apple-reveal" style="transition-delay: 0.1s;">
       <div class="bus-container" id="bus-container">
           <img src="https://i.imgur.com/ahYsvMG.png" class="bus-obj" alt="Bus">
-          <div class="headlight-group">
-            <div class="flare"></div>
-            <div class="beam"></div>
+          <div class="lights-container">
+            <div class="lens-flare"></div>
+            <div class="headlight-beam"></div>
           </div>
       </div>
   </div>
 
   <div class="hero-content">
-    <h1 class="reveal-fx">Quality ROBLOX Transit.</h1>
-    <div class="text-block reveal-fx delay-100">
+    <h1 class="apple-reveal">Quality ROBLOX Transit.</h1>
+    <div class="text-block apple-reveal" style="transition-delay: 0.2s;">
         <p>We sell high-quality buses and more for ROBLOX games. Our server features a fun server currency system, allowing members to earn rewards and purchase exclusive roles. We pride ourselves on a strong community, fair pricing, and transparent deals.</p>
         <p>We offer both custom commissions, including custom decals, and ready-to-use models available instantly. Whether you’re looking for something unique or something ready right away, we’ve got you covered.</p>
     </div>
   </div>
 
   <div class="grid-section">
-    <div class="card reveal-fx">
+    <div class="card apple-reveal">
         <div class="typewriter-title" id="typewriter-text"></div>
         <p>Join our Discord server to explore our full catalog of buses, accessories, and custom services. Experience the most active transport development community on Roblox.</p>
         <a href="https://discord.com/servers/kladenske-dilny-822122237258760192" target="_blank" class="btn-discord">
@@ -321,12 +359,12 @@
         </a>
     </div>
 
-    <div class="discord-widget-container reveal-fx delay-200">
+    <div class="discord-widget-container apple-reveal" style="transition-delay: 0.2s;">
         <iframe src="https://discord.com/widget?id=822122237258760192&theme=dark" width="100%" height="100%" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
     </div>
   </div>
 
-  <footer class="reveal-fx">
+  <footer class="apple-reveal">
     &copy; 2024 KLADENSKÉ DÍLNY
   </footer>
 </div>
@@ -334,39 +372,45 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     
-    // --- BUS SCROLL LOGIC ---
+    // --- OVLÁDÁNÍ AUTOBUSU + SCROLL EFEKT ---
     const bus = document.getElementById('bus-container');
     const busStage = document.getElementById('bus-stage');
 
-    function updateBusPosition() {
+    function updateBus() {
+        // Získáme pozici scrollu
         const scrollY = window.pageYOffset;
-        const speed = window.innerWidth < 850 ? 0.3 : 0.6;
-        const initialOffset = window.innerWidth < 850 ? -50 : -100;
         
-        const moveX = initialOffset + (scrollY * speed);
+        // Autobus jede rychleji než scroll (parallax)
+        const moveX = -200 + (scrollY * 0.8); 
         
         if (bus) {
+            // Používáme translate3d pro HW akceleraci
             bus.style.transform = `translate3d(${moveX}px, 0, 0)`;
         }
-        requestAnimationFrame(updateBusPosition);
+        requestAnimationFrame(updateBus);
     }
     
-    requestAnimationFrame(updateBusPosition);
+    // Spustit smyčku animace
+    requestAnimationFrame(updateBus);
 
-    // --- LIGHTS BLINK LOGIC ---
+    // --- BLIKÁNÍ SVĚTEL NA KLIK ---
     if (busStage) {
         busStage.addEventListener('click', () => {
             bus.classList.add('lights-on');
-            setTimeout(() => bus.classList.remove('lights-on'), 200);
-            setTimeout(() => bus.classList.add('lights-on'), 400);
-            setTimeout(() => bus.classList.remove('lights-on'), 600);
-            // After double blink, stay on for a bit
-            setTimeout(() => bus.classList.add('lights-on'), 800);
-            setTimeout(() => bus.classList.remove('lights-on'), 2500);
+            // Dvojité bliknutí
+            setTimeout(() => bus.classList.remove('lights-on'), 150);
+            setTimeout(() => bus.classList.add('lights-on'), 300);
+            setTimeout(() => bus.classList.remove('lights-on'), 450);
+            // Pak svítí déle
+            setTimeout(() => bus.classList.add('lights-on'), 600);
+            setTimeout(() => bus.classList.remove('lights-on'), 2000);
         });
+        
+        // Automaticky bliknout při načtení pro efekt
+        setTimeout(() => busStage.click(), 1000);
     }
 
-    // --- TYPEWRITER ---
+    // --- TYPEWRITER EFEKT (pouze jednou) ---
     const twElement = document.getElementById('typewriter-text');
     const twText = "Kladenské Dílny";
     let charIdx = 0;
@@ -382,33 +426,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- APPLE REVEAL ANIMATIONS ---
+    // --- "TIME TRAVEL" SCROLL OBSERVER ---
+    // Toto zajistí efekt "přilétávání" a "odlétávání"
     const observerOptions = {
         root: null,
-        rootMargin: '0px',
+        rootMargin: '-50px', // Animace začne, až když je prvek trochu v obraze
         threshold: 0.1
     };
 
     const scrollObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
+                // Když je prvek vidět: přiletí (stane se viditelným)
+                entry.target.classList.add('in-view');
                 
-                // Trigger typewriter only when card is visible
+                // Spustit psací stroj
                 if (entry.target.querySelector('#typewriter-text') && !hasTyped) {
                     hasTyped = true;
                     setTimeout(type, 300);
                 }
             } else {
-                // Remove class to re-animate when scrolling back up (Apple style)
-                if (entry.boundingClientRect.y > 0) {
-                   entry.target.classList.remove('visible');
-                }
+                // Když prvek zmizí ze záběru (nahoru nebo dolů): odletí pryč (efekt vrácení času)
+                // Pokud chceš, aby zůstaly viditelné po prvním načtení, smaž tento `else` blok.
+                entry.target.classList.remove('in-view'); 
             }
         });
     }, observerOptions);
 
-    document.querySelectorAll('.reveal-fx').forEach(el => scrollObserver.observe(el));
+    document.querySelectorAll('.apple-reveal').forEach(el => scrollObserver.observe(el));
 });
 </script>
 </body>

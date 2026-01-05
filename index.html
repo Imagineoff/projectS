@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kladenské dílny | Premium Roblox Transit</title>
+    <title>Kladenské Dílny | Next Gen Transit</title>
     <link rel="icon" href="https://i.imgur.com/tCvSBHQ.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,362 +11,420 @@
     
     <style>
         :root {
-            --bg: #050505;
-            --fg: #ffffff;
-            --accent: #FFC700; 
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.08);
-            --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
+            --bg: #000000;
+            --text-main: #ffffff;
+            --text-muted: #86868b;
+            --accent: #FFC700; /* KD Yellow */
+            --accent-glow: rgba(255, 199, 0, 0.3);
+            --glass: rgba(28, 28, 30, 0.6);
+            --border: rgba(255, 255, 255, 0.1);
+            --apple-ease: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg);
-            color: var(--fg);
+            color: var(--text-main);
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             line-height: 1.5;
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(255, 199, 0, 0.05) 0%, transparent 50%),
-                linear-gradient(var(--border) 1px, transparent 1px),
-                linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 100% 100%, 60px 60px, 60px 60px;
+            padding-bottom: 250px; /* Space for the bus at bottom */
         }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 30px; }
-
-        /* --- APPLE SPACE ANIMATIONS --- */
-        .reveal {
-            opacity: 0;
-            transform: perspective(1200px) translate3d(0, 60px, -150px) rotateX(10deg);
-            filter: blur(15px);
-            transition: all 1.4s var(--ease-apple);
-            will-change: transform, opacity, filter;
+        /* --- DYNAMIC BACKGROUND --- */
+        .ambient-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(255, 199, 0, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(50, 50, 255, 0.05), transparent 25%);
+            filter: blur(40px);
         }
 
-        .reveal.active {
-            opacity: 1;
-            transform: perspective(1200px) translate3d(0, 0, 0) rotateX(0deg);
-            filter: blur(0px);
+        .grid-lines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: -1;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px);
+            background-size: 100% 120px;
+            opacity: 0.15;
+            mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
         }
+
+        /* --- TYPOGRAPHY & LAYOUT --- */
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1, h2, h3 { font-family: 'Kanit', sans-serif; letter-spacing: -0.02em; }
 
         /* --- HEADER --- */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 40px 0;
-            position: relative;
-            z-index: 100;
+            padding: 30px 0;
+            margin-bottom: 80px;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             text-decoration: none;
-            color: var(--fg);
-        }
-
-        .brand img { width: 55px; height: 55px; filter: drop-shadow(0 0 15px rgba(255,199,0,0.4)); }
-
-        .brand-text {
-            font-family: 'Kanit', sans-serif;
-            font-size: 26px;
-            font-weight: 800;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
         }
 
-        .nav-icons { display: flex; gap: 15px; }
+        .brand img { width: 40px; height: 40px; }
 
-        .icon-link {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            transition: 0.4s var(--ease-apple);
+        .nav-link {
+            color: var(--text-muted);
             text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+            margin-left: 20px;
         }
+        .nav-link:hover { color: white; }
 
-        .icon-link:hover {
-            background: var(--accent);
-            color: #000;
-            transform: scale(1.1) translateY(-3px);
-            box-shadow: 0 10px 20px rgba(255, 199, 0, 0.3);
-        }
-
-        /* --- BUS SCROLL SYSTEM --- */
-        .bus-track {
-            position: relative;
-            width: 100%;
-            height: 350px;
+        /* --- HERO SECTION --- */
+        .hero {
+            min-height: 80vh;
             display: flex;
-            align-items: center;
-            margin: 60px 0;
-            pointer-events: none;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            perspective: 1000px;
         }
 
-        #bus-container {
-            position: absolute;
-            left: -300px;
-            will-change: transform;
-            pointer-events: auto;
-            cursor: pointer;
-        }
-
-        .bus-img {
-            height: 240px;
-            width: auto;
-            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.8));
-            position: relative;
-            z-index: 5;
-        }
-
-        /* LIGHTS SYSTEM */
-        .light-source {
-            position: absolute;
-            top: 67%; 
-            right: 4%;
-            width: 10px;
-            height: 10px;
-            z-index: 10;
-        }
-
-        .beam {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 700px;
-            height: 400px;
-            background: radial-gradient(ellipse at left, rgba(255, 235, 150, 0.7) 0%, rgba(255, 199, 0, 0.1) 40%, transparent 75%);
-            transform: translateY(-50%) rotate(-3deg);
-            filter: blur(15px);
-            opacity: 0;
-            mix-blend-mode: screen;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .flare {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle, #fff 0%, var(--accent) 30%, transparent 70%);
-            filter: blur(6px);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .lights-active .beam, .lights-active .flare { opacity: 1; }
-
-        /* --- CONTENT --- */
-        .hero { margin-bottom: 150px; }
-
-        h1 {
-            font-family: 'Kanit', sans-serif;
-            font-size: clamp(40px, 10vw, 90px);
-            line-height: 0.9;
-            margin-bottom: 40px;
-            background: linear-gradient(180deg, #fff 30%, #666 100%);
+        .hero h1 {
+            font-size: clamp(40px, 8vw, 96px);
+            line-height: 1.1;
+            font-weight: 800;
+            background: linear-gradient(180deg, #fff 0%, #a1a1a6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 40px rgba(255,255,255,0.1));
         }
 
-        .description {
-            font-size: 22px;
-            color: #aaa;
-            max-width: 750px;
+        .hero p {
+            font-size: clamp(18px, 3vw, 24px);
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 40px;
             font-weight: 300;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 150px;
+        /* --- APPLE STYLE REVEAL ANIMATION --- */
+        .reveal-node {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+            filter: blur(10px);
+            transition: all 1s var(--apple-ease);
         }
 
-        .card {
+        .reveal-node.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        /* --- CARDS & CONTENT --- */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 100px 0;
+        }
+
+        .bento-card {
             background: var(--glass);
             border: 1px solid var(--border);
-            padding: 50px;
-            border-radius: 30px;
-            backdrop-filter: blur(10px);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            border-radius: 24px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.4s var(--apple-ease);
         }
 
-        .typewriter {
-            font-family: 'Kanit', sans-serif;
-            font-size: 36px;
+        .bento-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .bento-card h3 {
+            font-size: 28px;
             color: var(--accent);
-            margin-bottom: 20px;
-            min-height: 44px;
+            margin-bottom: 15px;
         }
 
-        .btn {
+        .bento-card p { color: var(--text-muted); font-size: 17px; }
+
+        .btn-cta {
+            display: inline-block;
+            background: white;
+            color: black;
+            padding: 16px 36px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255,255,255,0.4);
+        }
+
+        .discord-btn {
             background: #5865F2;
             color: white;
-            text-decoration: none;
-            padding: 20px 40px;
-            border-radius: 15px;
-            font-weight: 800;
-            text-align: center;
-            margin-top: 30px;
-            transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
+        .discord-btn:hover { box-shadow: 0 0 30px rgba(88, 101, 242, 0.4); }
 
-        .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(88, 101, 242, 0.4);
-            filter: brightness(1.1);
-        }
-
-        .widget {
-            height: 550px;
-            background: #000;
-            border-radius: 30px;
+        /* --- THE FIXED BUS TRACKER SYSTEM --- */
+        .bus-tracker-wrapper {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 220px; /* Výška prostoru pro bus */
+            z-index: 100;
+            pointer-events: none; /* Kliknutí projde skrz */
             overflow: hidden;
-            border: 1px solid var(--border);
+            background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, transparent 100%);
         }
 
+        .road-line {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Samotný kontejner autobusu, který se bude hýbat */
+        .bus-mover {
+            position: absolute;
+            bottom: 25px;
+            left: 0; /* JS bude ovládat tuto hodnotu */
+            width: 300px; /* Šířka autobusu */
+            height: auto;
+            will-change: transform, left;
+            transition: transform 0.1s linear; /* Jemné vyhlazení */
+        }
+
+        .bus-graphic {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.9));
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Efekt světel */
+        .headlight-beam {
+            position: absolute;
+            right: -250px; /* Svítí doprava */
+            top: 55%;
+            width: 300px;
+            height: 100px;
+            background: radial-gradient(ellipse at left, rgba(255, 235, 150, 0.4) 0%, transparent 70%);
+            transform: translateY(-50%) rotate(5deg);
+            filter: blur(15px);
+            mix-blend-mode: screen;
+            z-index: 1;
+            opacity: 0.8;
+        }
+
+        /* Kola (pokud bys chtěl točit, ale u 2D obrázku je to riskantní, necháme statické pro čistotu) */
+        
+        /* Indikátor postupu */
+        .progress-label {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 199, 0, 0.1);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-family: 'Kanit', sans-serif;
+            text-transform: uppercase;
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .bus-mover:hover .progress-label { opacity: 1; }
+
+        /* --- FOOTER --- */
         footer {
-            padding: 80px 0;
-            text-align: center;
             border-top: 1px solid var(--border);
-            color: #444;
+            padding: 80px 0 200px 0; /* Extra padding dole, aby bus nezakryl text */
+            text-align: center;
+            color: var(--text-muted);
             font-size: 14px;
-            letter-spacing: 2px;
         }
 
-        @media (max-width: 900px) {
-            .grid { grid-template-columns: 1fr; }
-            .bus-img { height: 160px; }
-            .bus-track { height: 250px; }
-            .beam { width: 400px; height: 250px; }
+        /* --- MOBILE ADJUSTMENTS --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 48px; }
+            .bus-mover { width: 180px; }
+            .bus-tracker-wrapper { height: 180px; }
         }
+
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header class="reveal">
-        <a href="#" class="brand">
-            <img src="https://i.imgur.com/tCvSBHQ.png" alt="Logo">
-            <div class="brand-text">Kladenské dílny</div>
-        </a>
-        <div class="nav-icons">
-            <a href="https://tiktok.com/@kladnoworkshops" class="icon-link" target="_blank">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
-            </a>
-            <a href="https://discord.com/invite/kladenske-dilny-822122237258760192" class="icon-link" target="_blank">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-            </a>
-        </div>
-    </header>
+    <div class="ambient-bg"></div>
+    <div class="grid-lines"></div>
 
-    <div class="bus-track reveal">
-        <div id="bus-container">
-            <img src="https://i.imgur.com/ahYsvMG.png" class="bus-img" alt="Bus">
-            <div class="light-source">
-                <div class="flare"></div>
-                <div class="beam"></div>
+    <div class="container">
+        <header class="reveal-node">
+            <a href="#" class="brand">
+                <img src="https://i.imgur.com/tCvSBHQ.png" alt="KD Logo">
+                <span>Kladenské Dílny</span>
+            </a>
+            <nav>
+                <a href="https://discord.com/invite/kladenske-dilny-822122237258760192" class="nav-link">Discord</a>
+                <a href="#" class="nav-link">Roblox</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <h1 class="reveal-node">Tvoje cesta.<br>Náš standard.</h1>
+            <p class="reveal-node">Kladenské dílny přináší revoluci do Roblox dopravy. Precizní modely, skvělá komunita a inovativní systémy.</p>
+            <div class="reveal-node" style="margin-top: 20px;">
+                <a href="#about" class="btn-cta">Zjistit více</a>
             </div>
+        </section>
+
+        <section id="about" class="feature-grid">
+            <div class="bento-card reveal-node">
+                <h3>Kvalita</h3>
+                <p>Každý autobus je modelován s důrazem na realismus. Od textur sedadel po zvuky motoru. Nic nenecháváme náhodě.</p>
+            </div>
+            <div class="bento-card reveal-node" style="transition-delay: 0.1s;">
+                <h3>Ekonomika</h3>
+                <p>Náš server využívá unikátní měnový systém. Získej role, kupuj exkluzivní vozidla a staň se dopravním magnátem.</p>
+            </div>
+            <div class="bento-card reveal-node" style="transition-delay: 0.2s;">
+                <h3>Komunita</h3>
+                <p>Jsme víc než jen obchod. Jsme komunita nadšenců do dopravy. Přidej se k nám na Discordu.</p>
+                <br>
+                <a href="https://discord.com/invite/kladenske-dilny-822122237258760192" class="btn-cta discord-btn">Připojit se</a>
+            </div>
+            <div class="bento-card reveal-node" style="grid-column: 1 / -1;">
+                <h3>Transparency & Trust</h3>
+                <p>Férové ceny, žádné skryté poplatky a přímá komunikace s vývojáři. To je KD Standard.</p>
+            </div>
+        </section>
+
+        <div style="height: 50vh;"></div> <section class="hero" style="min-height: 50vh;">
+            <h2 class="reveal-node">Jsi připraven vyjet?</h2>
+            <p class="reveal-node">Nastup do nového standardu ještě dnes.</p>
+        </section>
+
+        <footer class="reveal-node">
+            <p>&copy; 2026 Kladenské Dílny. Všechna práva vyhrazena.</p>
+            <p style="font-size: 12px; margin-top: 10px; opacity: 0.5;">Design inspired by premium tech.</p>
+        </footer>
+    </div>
+
+    <div class="bus-tracker-wrapper">
+        <div class="road-line"></div>
+        <div class="bus-mover" id="bus">
+            <div class="progress-label" id="bus-label">0%</div>
+            <div class="headlight-beam"></div>
+            <img src="https://i.imgur.com/ahYsvMG.png" class="bus-graphic" alt="KD Bus">
         </div>
     </div>
 
-    <section class="hero">
-        <h1 class="reveal">Quality ROBLOX Transit.</h1>
-        <p class="description reveal">We sell high-quality buses and more for ROBLOX games. Our server features a fun server currency system, allowing members to earn rewards and purchase exclusive roles. We pride ourselves on a strong community, fair pricing, and transparent deals.</p>
-    </section>
+    <script>
+        // --- LOGIKA POSUVU AUTOBUSU (Progress Tracker) ---
+        const bus = document.getElementById('bus');
+        const busLabel = document.getElementById('bus-label');
 
-    <div class="grid">
-        <div class="card reveal">
-            <div>
-                <div class="typewriter" id="type-target"></div>
-                <p style="color: #888; font-size: 18px;">Join our Discord server to explore our full catalog of buses, accessories, and custom services. Experience the most active transport development community on Roblox.</p>
-            </div>
-            <a href="https://discord.com/invite/kladenske-dilny-822122237258760192" class="btn" target="_blank">Join Discord Server</a>
-        </div>
-        <div class="widget reveal">
-            <iframe src="https://discord.com/widget?id=822122237258760192&theme=dark" width="100%" height="100%" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
-        </div>
-    </div>
+        function updateBusPosition() {
+            // Získáme celkovou výšku dokumentu a výšku okna
+            const scrollTop = window.scrollY;
+            const docHeight = document.body.scrollHeight;
+            const winHeight = window.innerHeight;
+            
+            // Vypočítáme, kolik % uživatel odscrolloval (0 až 1)
+            // Používáme (docHeight - winHeight), protože scrollovat jde jen do té doby, než spodek okna narazí na spodek stránky
+            const scrollPercent = scrollTop / (docHeight - winHeight);
+            
+            // Omezíme procenta mezi 0 a 1 (pro jistotu)
+            const clampedPercent = Math.min(Math.max(scrollPercent, 0), 1);
 
-    <footer class="reveal">
-        &copy; 2026 KLADENSKÉ DÍLNY • ALL RIGHTS RESERVED
-    </footer>
-</div>
+            // Vypočítáme pozici X. 
+            // Okno má šířku 100vw. Bus má nějakou šířku.
+            // Chceme, aby při 0% byl vlevo a při 100% vpravo (ale ne mimo obrazovku).
+            const windowWidth = window.innerWidth;
+            const busWidth = bus.offsetWidth;
+            const maxTravel = windowWidth - busWidth - 20; // 20px rezerva napravo
 
-<script>
-    // --- PARALLAX BUS SCROLL ---
-    const bus = document.getElementById('bus-container');
-    
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const busPos = -300 + (scrolled * 1.2);
-        bus.style.transform = `translateX(${busPos}px)`;
-    });
+            const currentPos = maxTravel * clampedPercent;
 
-    // --- LIGHTS CONTROL ---
-    bus.addEventListener('click', () => {
-        bus.classList.toggle('lights-active');
-    });
+            // Aplikujeme transformaci (plynulejší než left/top)
+            bus.style.transform = `translateX(${currentPos}px)`;
+            
+            // Aktualizujeme text nad busem
+            busLabel.innerText = Math.round(clampedPercent * 100) + '%';
+        }
 
-    // --- REVEAL ON SCROLL (APPLE STYLE) ---
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-            } else if (entry.boundingClientRect.top > 0) {
-                // Time travel effect: reset if scrolled up
-                entry.target.classList.remove('active');
+        // Použijeme requestAnimationFrame pro maximální plynulost (60fps)
+        let ticking = false;
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                window.requestAnimationFrame(function() {
+                    updateBusPosition();
+                    ticking = false;
+                });
+                ticking = true;
             }
         });
-    }, observerOptions);
+        
+        // Zavolat i při načtení a změně velikosti okna
+        window.addEventListener('resize', updateBusPosition);
+        updateBusPosition();
 
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // --- TYPEWRITER ---
-    const text = "Kladenské Dílny";
-    const target = document.getElementById('type-target');
-    let idx = 0;
-    let started = false;
+        // --- APPLE REVEAL ANIMATION ---
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
 
-    function startType() {
-        if (idx < text.length) {
-            target.textContent += text.charAt(idx);
-            idx++;
-            setTimeout(startType, 100);
-        }
-    }
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
 
-    const typeObserver = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && !started) {
-            started = true;
-            startType();
-        }
-    });
-    typeObserver.observe(target);
-</script>
-
+        document.querySelectorAll('.reveal-node').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>

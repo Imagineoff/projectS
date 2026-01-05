@@ -2,9 +2,9 @@
 <html lang="cs">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Kladenské dílny</title>
-  <meta name="description" content="We sell buses & more for ROBLOX games.">
+  <meta name="description" content="High-quality buses for ROBLOX games.">
   <link rel="icon" href="https://i.imgur.com/tCvSBHQ.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,10 +15,14 @@
       --bg: #ffffff;
       --fg: #050505;
       --accent: #FFC700; 
-      --gray-light: #f8f8f8;
     }
 
-    html, body { margin: 0; padding: 0; scroll-behavior: smooth; overflow-x: hidden; }
+    html, body { 
+      margin: 0; 
+      padding: 0; 
+      overflow-x: hidden; 
+      width: 100%;
+    }
     
     body {
       min-height: 100vh;
@@ -30,82 +34,221 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; position: relative; }
+    .wrap { 
+      max-width: 1080px; 
+      margin: 0 auto; 
+      padding: 0 20px; 
+      position: relative; 
+      z-index: 2;
+    }
 
-    header { display: flex; justify-content: space-between; align-items: center; padding: 30px 0; }
+    header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 30px 0; 
+      position: relative;
+      z-index: 10;
+    }
 
-    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--fg); }
-    .brand img { width: 45px; height: 45px; }
-    .brand-text { font-family: 'Kanit', sans-serif; font-size: 24px; font-weight: 800; text-transform: uppercase; }
+    .brand { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      text-decoration: none; 
+      color: var(--fg); 
+    }
+    
+    .brand img { 
+      width: 45px; 
+      height: 45px; 
+      object-fit: contain;
+    }
+    
+    .brand-text { 
+      font-family: 'Kanit', sans-serif; 
+      font-size: 24px; 
+      font-weight: 800; 
+      text-transform: uppercase; 
+    }
 
     .nav-links { display: flex; gap: 10px; }
+    
     .social-btn {
-        display: flex; align-items: center; justify-content: center;
-        width: 40px; height: 40px; border-radius: 50%;
-        background: #000; color: #fff; transition: 0.3s; text-decoration: none;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%;
+      background: #000; 
+      color: #fff; 
+      transition: 0.3s; 
+      text-decoration: none;
     }
-    .social-btn:hover { transform: translateY(-3px); background: var(--accent); color: #000; }
+    
+    .social-btn:hover { 
+      transform: scale(1.1); 
+      background: var(--accent); 
+      color: #000; 
+    }
+    
     .social-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
     .bus-stage {
-        position: relative; width: 100%; height: 200px;
-        background: linear-gradient(to bottom, transparent 95%, #000 95%);
-        margin-bottom: 50px; cursor: pointer; overflow: hidden;
+      position: relative; 
+      width: 100%; 
+      height: 250px;
+      margin-top: 20px;
+      margin-bottom: 40px; 
+      overflow: visible;
+      display: flex;
+      align-items: flex-end;
     }
-    .bus-container { position: absolute; bottom: 5px; left: -300px; will-change: transform; transition: transform 0.1s linear; }
-    .bus-obj { height: 160px; width: auto; display: block; }
+
+    .bus-container { 
+      position: relative;
+      will-change: transform; 
+      cursor: pointer;
+      display: inline-block;
+      transform: translate3d(-100px, 0, 0); 
+    }
+    
+    .bus-obj { 
+      height: 180px; 
+      width: auto; 
+      display: block; 
+      filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.2));
+    }
     
     .headlight-glow {
-        position: absolute; top: 55%; right: 10%; width: 40px; height: 40px;
-        background: radial-gradient(circle, rgba(255,199,0,0.8) 0%, transparent 70%);
-        opacity: 0; transition: opacity 0.1s; pointer-events: none;
+      position: absolute; 
+      top: 65%; 
+      right: 5%; 
+      width: 60px; 
+      height: 60px;
+      background: radial-gradient(circle, rgba(255,199,0,1) 0%, rgba(255,199,0,0) 70%);
+      opacity: 0; 
+      mix-blend-mode: screen;
+      pointer-events: none;
+      transition: opacity 0.1s;
     }
+
     .bus-container.blink .headlight-glow { opacity: 1; }
 
-    .hero-content { margin-bottom: 80px; text-align: left; }
-    h1 { font-family: 'Kanit', sans-serif; font-size: clamp(32px, 8vw, 60px); line-height: 1; margin: 0 0 20px 0; }
+    .hero-content { 
+      margin-bottom: 100px; 
+      text-align: left; 
+    }
+    
+    h1 { 
+      font-family: 'Kanit', sans-serif; 
+      font-size: clamp(36px, 8vw, 64px); 
+      line-height: 1.1; 
+      margin: 0 0 30px 0; 
+      letter-spacing: -1px;
+    }
 
-    .animated-text { font-size: 18px; line-height: 1.6; color: #444; max-width: 800px; }
-    .word-inner { display: inline-block; opacity: 0; transform: translateY(10px); transition: 0.4s ease forwards; }
-    .word-inner.visible { opacity: 1; transform: translateY(0); }
+    .text-block { 
+      font-size: 18px; 
+      line-height: 1.6; 
+      color: #333; 
+      max-width: 800px; 
+      opacity: 0;
+      transform: translateY(30px) scale(0.98);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-    .grid-section { display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; margin-bottom: 80px; }
+    .text-block.visible { 
+      opacity: 1; 
+      transform: translateY(0) scale(1);
+    }
+
+    .grid-section { 
+      display: grid; 
+      grid-template-columns: 1.2fr 1fr; 
+      gap: 40px; 
+      margin-bottom: 100px; 
+    }
 
     .card {
-        background: #fff; border: 3px solid #000; padding: 30px;
-        box-shadow: 10px 10px 0 #000; opacity: 0; transition: 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+      background: #fff; 
+      border: 3px solid #000; 
+      padding: 30px;
+      box-shadow: 12px 12px 0 #000; 
+      opacity: 0; 
+      transform: translateY(50px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .card.from-left { transform: translateX(-100px); }
-    .card.from-right { transform: translateX(100px); }
-    .card.visible { opacity: 1; transform: translateX(0); }
+
+    .card.visible { 
+      opacity: 1; 
+      transform: translateY(0);
+    }
 
     .typewriter-title {
-        font-family: 'Kanit'; font-size: 28px; text-transform: uppercase;
-        margin: 0 0 15px 0; min-height: 35px; border-right: 3px solid var(--accent);
-        width: fit-content; white-space: nowrap; overflow: hidden;
+      font-family: 'Kanit'; 
+      font-size: 28px; 
+      text-transform: uppercase;
+      margin: 0 0 20px 0; 
+      border-right: 4px solid var(--accent);
+      width: fit-content; 
+      white-space: nowrap; 
+      overflow: hidden;
     }
 
     .discord-widget-container {
-        width: 100%; height: 450px; background: #000;
-        box-shadow: 10px 10px 0 #000; opacity: 0;
-        transition: 0.8s cubic-bezier(0.2, 1, 0.3, 1) 0.2s;
-        transform: translateX(100px);
+      width: 100%; 
+      height: 450px; 
+      background: #000;
+      box-shadow: 12px 12px 0 #000; 
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
     }
-    .discord-widget-container.visible { opacity: 1; transform: translateX(0); }
+
+    .discord-widget-container.visible { 
+      opacity: 1; 
+      transform: scale(1);
+    }
 
     .btn-discord {
-        display: flex; align-items: center; justify-content: center; gap: 10px;
-        background: #5865F2; color: #fff; padding: 18px; font-weight: 800;
-        text-decoration: none; border: 3px solid #000; margin-top: 20px; transition: 0.3s;
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 10px;
+      background: #5865F2; 
+      color: #fff; 
+      padding: 20px; 
+      font-weight: 800;
+      text-decoration: none; 
+      border: 3px solid #000; 
+      margin-top: 30px; 
+      transition: 0.2s ease-out;
     }
-    .btn-discord:hover { background: #fff; color: #5865F2; transform: translate(-4px, -4px); box-shadow: 4px 4px 0 #000; }
+    
+    .btn-discord:hover { 
+      background: #fff; 
+      color: #5865F2; 
+      transform: translate(-4px, -4px); 
+      box-shadow: 6px 6px 0 #000; 
+    }
+
+    footer {
+      padding: 40px 0; 
+      text-align: center; 
+      border-top: 2px solid #000; 
+      font-weight: 600;
+      background: #fff;
+    }
 
     @media (max-width: 850px) {
-        .grid-section { grid-template-columns: 1fr; }
-        .card.from-right, .discord-widget-container { transform: translateX(-50px); }
-        header { flex-direction: column; gap: 20px; }
-        .bus-obj { height: 100px; }
-        .bus-stage { height: 130px; }
+      .grid-section { grid-template-columns: 1fr; }
+      header { flex-direction: column; gap: 20px; }
+      .bus-obj { height: 110px; }
+      .bus-stage { height: 140px; margin-bottom: 20px; }
+      .headlight-glow { width: 30px; height: 30px; top: 60%; }
+      .card, .discord-widget-container { box-shadow: 6px 6px 0 #000; }
     }
   </style>
 </head>
@@ -135,14 +278,15 @@
   </div>
 
   <div class="hero-content">
-    <h1>Quality ROBLOX Transit.</h1>
-    <div class="animated-text" id="about-text">
-      We sell high-quality buses and more for ROBLOX games. Our server features a fun server currency system, allowing members to earn rewards and purchase exclusive roles. We pride ourselves on a strong community, fair pricing, and transparent deals. We offer both custom commissions, including custom decals, and ready-to-use models available instantly. Whether you’re looking for something unique or something ready right away, we’ve got you covered.
+    <h1 class="apple-reveal">Quality ROBLOX Transit.</h1>
+    <div class="text-block apple-reveal">
+        <p>We sell high-quality buses and more for ROBLOX games. Our server features a fun server currency system, allowing members to earn rewards and purchase exclusive roles. We pride ourselves on a strong community, fair pricing, and transparent deals.</p>
+        <p>We offer both custom commissions, including custom decals, and ready-to-use models available instantly. Whether you’re looking for something unique or something ready right away, we’ve got you covered.</p>
     </div>
   </div>
 
   <div class="grid-section">
-    <div class="card from-left animate-on-scroll">
+    <div class="card apple-reveal">
         <div class="typewriter-title" id="typewriter-text"></div>
         <p>Join our Discord server to explore our full catalog of buses, accessories, and custom services. Experience the most active transport development community on Roblox.</p>
         <a href="https://discord.com/servers/kladenske-dilny-822122237258760192" target="_blank" class="btn-discord">
@@ -150,37 +294,51 @@
         </a>
     </div>
 
-    <div class="discord-widget-container animate-on-scroll">
+    <div class="discord-widget-container apple-reveal">
         <iframe src="https://discord.com/widget?id=822122237258760192&theme=dark" width="100%" height="100%" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
     </div>
   </div>
 
-  <footer style="padding: 40px 0; text-align: center; border-top: 2px solid #000; font-weight: 600;">
+  <footer>
     &copy; 2024 KLADENSKÉ DÍLNY
   </footer>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    // Bus Movement (Slower)
+    
     const bus = document.getElementById('bus-container');
-    window.addEventListener('scroll', () => {
+    const busStage = document.getElementById('bus-stage');
+
+    function updateBusPosition() {
         const scrollY = window.pageYOffset;
-        bus.style.transform = `translateX(${scrollY * 0.5}px)`; // Slower factor (0.5)
-    });
+        const speed = window.innerWidth < 850 ? 0.3 : 0.6;
+        const initialOffset = window.innerWidth < 850 ? -50 : -100;
+        
+        const moveX = initialOffset + (scrollY * speed);
+        
+        if (bus) {
+            bus.style.transform = `translate3d(${moveX}px, 0, 0)`;
+        }
+        requestAnimationFrame(updateBusPosition);
+    }
+    
+    requestAnimationFrame(updateBusPosition);
 
-    // Headlight Blink
-    document.getElementById('bus-stage').addEventListener('click', () => {
-        bus.classList.add('blink');
-        setTimeout(() => bus.classList.remove('blink'), 150);
-        setTimeout(() => bus.classList.add('blink'), 300);
-        setTimeout(() => bus.classList.remove('blink'), 450);
-    });
+    if (busStage) {
+        busStage.addEventListener('click', () => {
+            bus.classList.add('blink');
+            setTimeout(() => bus.classList.remove('blink'), 200);
+            setTimeout(() => bus.classList.add('blink'), 400);
+            setTimeout(() => bus.classList.remove('blink'), 600);
+        });
+    }
 
-    // Typewriter Effect
     const twElement = document.getElementById('typewriter-text');
     const twText = "Kladenské Dílny";
     let charIdx = 0;
+    let hasTyped = false;
+
     function type() {
         if (charIdx < twText.length) {
             twElement.textContent += twText.charAt(charIdx);
@@ -191,27 +349,30 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Scroll Animations (Arrival from sides)
-    const observerOptions = { threshold: 0.15 };
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.15
+    };
+
     const scrollObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                if (entry.target.id === 'about-text') animateWords(entry.target);
-                if (entry.target.classList.contains('from-left')) setTimeout(type, 500);
+                
+                if (entry.target.querySelector('#typewriter-text') && !hasTyped) {
+                    hasTyped = true;
+                    setTimeout(type, 300);
+                }
+            } else {
+                if (entry.boundingClientRect.y > 0) {
+                   entry.target.classList.remove('visible');
+                }
             }
         });
     }, observerOptions);
 
-    document.querySelectorAll('.animate-on-scroll, #about-text').forEach(el => scrollObserver.observe(el));
-
-    function animateWords(container) {
-        const words = container.innerText.split(' ');
-        container.innerHTML = words.map(w => `<span class="word-inner">${w} </span>`).join('');
-        container.querySelectorAll('.word-inner').forEach((span, i) => {
-            setTimeout(() => span.classList.add('visible'), i * 30);
-        });
-    }
+    document.querySelectorAll('.apple-reveal').forEach(el => scrollObserver.observe(el));
 });
 </script>
 </body>

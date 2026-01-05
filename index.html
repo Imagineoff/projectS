@@ -15,6 +15,7 @@
       --bg: #ffffff;
       --fg: #050505;
       --accent: #FFC700; 
+      --ease-apple: cubic-bezier(0.25, 1, 0.5, 1);
     }
 
     html, body { 
@@ -41,6 +42,25 @@
       position: relative; 
       z-index: 2;
     }
+
+    /* Apple-style floating animations */
+    .reveal-fx {
+      opacity: 0;
+      transform: translateY(40px) scale(0.96);
+      filter: blur(10px);
+      transition: opacity 1.2s var(--ease-apple), transform 1.2s var(--ease-apple), filter 1.2s var(--ease-apple);
+      will-change: opacity, transform, filter;
+    }
+
+    .reveal-fx.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+
+    /* Stagger delays if needed */
+    .delay-100 { transition-delay: 0.1s; }
+    .delay-200 { transition-delay: 0.2s; }
 
     header { 
       display: flex; 
@@ -83,12 +103,12 @@
       border-radius: 50%;
       background: #000; 
       color: #fff; 
-      transition: 0.3s; 
+      transition: 0.3s var(--ease-apple); 
       text-decoration: none;
     }
     
     .social-btn:hover { 
-      transform: scale(1.1); 
+      transform: scale(1.15); 
       background: var(--accent); 
       color: #000; 
     }
@@ -119,22 +139,50 @@
       width: auto; 
       display: block; 
       filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.2));
+      position: relative;
+      z-index: 2;
     }
     
-    .headlight-glow {
-      position: absolute; 
-      top: 65%; 
-      right: 5%; 
-      width: 60px; 
-      height: 60px;
-      background: radial-gradient(circle, rgba(255,199,0,1) 0%, rgba(255,199,0,0) 70%);
-      opacity: 0; 
-      mix-blend-mode: screen;
+    /* LIGHTS CONFIGURATION */
+    .headlight-group {
+      position: absolute;
+      top: 48%; 
+      right: -5%; /* Posunuto vice dopredu pred autobus */
+      width: 200px;
+      height: 100px;
       pointer-events: none;
-      transition: opacity 0.1s;
+      z-index: 1;
+      transform-origin: center left;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
-    .bus-container.blink .headlight-glow { opacity: 1; }
+    /* Svetelny kuzel */
+    .beam {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: conic-gradient(from 255deg at 0% 50%, rgba(255, 230, 100, 0) 0deg, rgba(255, 230, 100, 0.4) 15deg, rgba(255, 230, 100, 0) 30deg);
+      filter: blur(8px);
+      mix-blend-mode: screen;
+    }
+
+    /* Zare primo na svetle */
+    .flare {
+      position: absolute;
+      top: 40%;
+      left: -10px;
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, #fff 0%, #ffc700 40%, transparent 70%);
+      filter: blur(4px);
+      mix-blend-mode: screen;
+    }
+
+    /* Aktivace svetel */
+    .bus-container.lights-on .headlight-group { opacity: 1; }
 
     .hero-content { 
       margin-bottom: 100px; 
@@ -154,14 +202,6 @@
       line-height: 1.6; 
       color: #333; 
       max-width: 800px; 
-      opacity: 0;
-      transform: translateY(30px) scale(0.98);
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .text-block.visible { 
-      opacity: 1; 
-      transform: translateY(0) scale(1);
     }
 
     .grid-section { 
@@ -176,14 +216,6 @@
       border: 3px solid #000; 
       padding: 30px;
       box-shadow: 12px 12px 0 #000; 
-      opacity: 0; 
-      transform: translateY(50px);
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .card.visible { 
-      opacity: 1; 
-      transform: translateY(0);
     }
 
     .typewriter-title {
@@ -202,14 +234,6 @@
       height: 450px; 
       background: #000;
       box-shadow: 12px 12px 0 #000; 
-      opacity: 0;
-      transform: scale(0.95);
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
-    }
-
-    .discord-widget-container.visible { 
-      opacity: 1; 
-      transform: scale(1);
     }
 
     .btn-discord {
@@ -224,7 +248,7 @@
       text-decoration: none; 
       border: 3px solid #000; 
       margin-top: 30px; 
-      transition: 0.2s ease-out;
+      transition: 0.3s var(--ease-apple);
     }
     
     .btn-discord:hover { 
@@ -247,7 +271,7 @@
       header { flex-direction: column; gap: 20px; }
       .bus-obj { height: 110px; }
       .bus-stage { height: 140px; margin-bottom: 20px; }
-      .headlight-glow { width: 30px; height: 30px; top: 60%; }
+      .headlight-group { top: 46%; width: 120px; right: -15%; } 
       .card, .discord-widget-container { box-shadow: 6px 6px 0 #000; }
     }
   </style>
@@ -255,7 +279,7 @@
 <body>
 
 <div class="wrap">
-  <header>
+  <header class="reveal-fx">
     <a href="#" class="brand">
       <img src="https://i.imgur.com/tCvSBHQ.png" alt="Logo">
       <div class="brand-text">Kladenské dílny</div>
@@ -270,23 +294,26 @@
     </div>
   </header>
 
-  <div class="bus-stage" id="bus-stage">
+  <div class="bus-stage reveal-fx delay-100" id="bus-stage">
       <div class="bus-container" id="bus-container">
           <img src="https://i.imgur.com/ahYsvMG.png" class="bus-obj" alt="Bus">
-          <div class="headlight-glow"></div>
+          <div class="headlight-group">
+            <div class="flare"></div>
+            <div class="beam"></div>
+          </div>
       </div>
   </div>
 
   <div class="hero-content">
-    <h1 class="apple-reveal">Quality ROBLOX Transit.</h1>
-    <div class="text-block apple-reveal">
+    <h1 class="reveal-fx">Quality ROBLOX Transit.</h1>
+    <div class="text-block reveal-fx delay-100">
         <p>We sell high-quality buses and more for ROBLOX games. Our server features a fun server currency system, allowing members to earn rewards and purchase exclusive roles. We pride ourselves on a strong community, fair pricing, and transparent deals.</p>
         <p>We offer both custom commissions, including custom decals, and ready-to-use models available instantly. Whether you’re looking for something unique or something ready right away, we’ve got you covered.</p>
     </div>
   </div>
 
   <div class="grid-section">
-    <div class="card apple-reveal">
+    <div class="card reveal-fx">
         <div class="typewriter-title" id="typewriter-text"></div>
         <p>Join our Discord server to explore our full catalog of buses, accessories, and custom services. Experience the most active transport development community on Roblox.</p>
         <a href="https://discord.com/servers/kladenske-dilny-822122237258760192" target="_blank" class="btn-discord">
@@ -294,12 +321,12 @@
         </a>
     </div>
 
-    <div class="discord-widget-container apple-reveal">
+    <div class="discord-widget-container reveal-fx delay-200">
         <iframe src="https://discord.com/widget?id=822122237258760192&theme=dark" width="100%" height="100%" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
     </div>
   </div>
 
-  <footer>
+  <footer class="reveal-fx">
     &copy; 2024 KLADENSKÉ DÍLNY
   </footer>
 </div>
@@ -307,6 +334,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     
+    // --- BUS SCROLL LOGIC ---
     const bus = document.getElementById('bus-container');
     const busStage = document.getElementById('bus-stage');
 
@@ -325,15 +353,20 @@ document.addEventListener("DOMContentLoaded", () => {
     
     requestAnimationFrame(updateBusPosition);
 
+    // --- LIGHTS BLINK LOGIC ---
     if (busStage) {
         busStage.addEventListener('click', () => {
-            bus.classList.add('blink');
-            setTimeout(() => bus.classList.remove('blink'), 200);
-            setTimeout(() => bus.classList.add('blink'), 400);
-            setTimeout(() => bus.classList.remove('blink'), 600);
+            bus.classList.add('lights-on');
+            setTimeout(() => bus.classList.remove('lights-on'), 200);
+            setTimeout(() => bus.classList.add('lights-on'), 400);
+            setTimeout(() => bus.classList.remove('lights-on'), 600);
+            // After double blink, stay on for a bit
+            setTimeout(() => bus.classList.add('lights-on'), 800);
+            setTimeout(() => bus.classList.remove('lights-on'), 2500);
         });
     }
 
+    // --- TYPEWRITER ---
     const twElement = document.getElementById('typewriter-text');
     const twText = "Kladenské Dílny";
     let charIdx = 0;
@@ -349,10 +382,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // --- APPLE REVEAL ANIMATIONS ---
     const observerOptions = {
         root: null,
         rootMargin: '0px',
-        threshold: 0.15
+        threshold: 0.1
     };
 
     const scrollObserver = new IntersectionObserver((entries) => {
@@ -360,11 +394,13 @@ document.addEventListener("DOMContentLoaded", () => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
                 
+                // Trigger typewriter only when card is visible
                 if (entry.target.querySelector('#typewriter-text') && !hasTyped) {
                     hasTyped = true;
                     setTimeout(type, 300);
                 }
             } else {
+                // Remove class to re-animate when scrolling back up (Apple style)
                 if (entry.boundingClientRect.y > 0) {
                    entry.target.classList.remove('visible');
                 }
@@ -372,7 +408,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }, observerOptions);
 
-    document.querySelectorAll('.apple-reveal').forEach(el => scrollObserver.observe(el));
+    document.querySelectorAll('.reveal-fx').forEach(el => scrollObserver.observe(el));
 });
 </script>
 </body>

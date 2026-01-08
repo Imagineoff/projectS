@@ -87,6 +87,8 @@
         .stock-name{font-weight:700;color:white}
         .stock-change{display:flex;align-items:center;gap:8px;font-weight:700;color:#27ae60}
         .stock-change .arrow{font-size:14px}
+        .stock-item[data-up="true"] .stock-change{color:#27ae60}
+        .stock-item[data-up="false"] .stock-change{color:#e74c3c}
         .community-grid{display:grid;grid-template-columns:350px 1fr;gap:18px;margin-top:18px}
         .discord-embed{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:rgba(0,0,0,0.45)}
         .discord-embed iframe{width:100%;height:420px;border:0;display:block}
@@ -194,23 +196,23 @@
         <div class="bento-card stocks-card reveal-node">
             <div class="stocks-info">Akcie jsou součástí hry. Na našem Discordu si můžete otevřít ticket a investovat částku do akcií. Peníze můžete kdykoliv vybrat.</div>
             <div class="stock-list">
-                <div class="stock-item">
+                <div class="stock-item" data-up="true">
                     <div class="stock-left">
                         <div class="stock-name">Akcie 1</div>
                     </div>
-                    <div class="stock-change"><span class="arrow">▲</span><span class="percent">0%</span></div>
+                    <div class="stock-change"><span class="arrow">▲</span><span class="percent">12%</span></div>
                 </div>
-                <div class="stock-item">
+                <div class="stock-item" data-up="false">
                     <div class="stock-left">
                         <div class="stock-name">Akcie dva</div>
                     </div>
-                    <div class="stock-change"><span class="arrow">▲</span><span class="percent">0%</span></div>
+                    <div class="stock-change"><span class="arrow">▼</span><span class="percent">-6%</span></div>
                 </div>
-                <div class="stock-item">
+                <div class="stock-item" data-up="true">
                     <div class="stock-left">
                         <div class="stock-name">Akcie 3</div>
                     </div>
-                    <div class="stock-change"><span class="arrow">▲</span><span class="percent">0%</span></div>
+                    <div class="stock-change"><span class="arrow">▲</span><span class="percent">3%</span></div>
                 </div>
             </div>
         </div>
@@ -237,42 +239,6 @@
         </div>
     </div>
     <script>
-        const bus = document.getElementById('bus');
-        const busLabel = document.getElementById('bus-label');
-        const wrapper = document.querySelector('.bus-tracker-wrapper');
-        let lastUserInteraction = performance.now();
-        function getScrollPercent(){
-            const scrollTop = window.scrollY;
-            const docHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
-            const winHeight = window.innerHeight;
-            const denom = Math.max(docHeight - winHeight, 1);
-            const scrollPercent = scrollTop / denom;
-            return Math.min(Math.max(scrollPercent, 0), 1);
-        }
-        function computeTrack(){
-            const pad = 40;
-            const wrapperHeight = wrapper.clientHeight;
-            const trackTop = pad;
-            const trackBottom = Math.max(wrapperHeight - pad, trackTop + 10);
-            const busHeight = bus.offsetHeight || 72;
-            const maxTravel = Math.max(trackBottom - trackTop - busHeight, 0);
-            return {trackTop, maxTravel};
-        }
-        function setBusPositionByPercent(pct){
-            const {trackTop, maxTravel} = computeTrack();
-            const clamped = Math.min(Math.max(pct, 0), 1);
-            const currentY = Math.round(trackTop + maxTravel * clamped);
-            bus.style.top = currentY + 'px';
-            busLabel.innerText = Math.round(clamped * 100) + '%';
-        }
-        function userInteracted(){
-            lastUserInteraction = performance.now();
-        }
-        window.addEventListener('scroll', userInteracted, {passive:true});
-        window.addEventListener('wheel', userInteracted, {passive:true});
-        window.addEventListener('touchstart', userInteracted, {passive:true});
-        window.addEventListener('touchmove', userInteracted, {passive:true});
-        window.addEventListener('resize', ()=>{ setBusPositionByPercent(getScrollPercent()); });
         const promoText = document.getElementById('promo-text').innerText;
         const copyBtn = document.getElementById('copy-promo');
         copyBtn.addEventListener('click', async function(){
@@ -291,27 +257,30 @@
                 setTimeout(()=>copyBtn.innerText='Kopírovat',1400);
             }
         });
-        function loop(ts){
-            const autoPercent = 0.5 + 0.45 * Math.sin(ts/1000 * 0.6);
-            const scrollPercent = getScrollPercent();
-            const now = performance.now();
-            const interactionDelta = now - lastUserInteraction;
-            const followScroll = (interactionDelta < 900 && scrollPercent > 0.005) || scrollPercent > 0.01;
-            if(followScroll){
-                setBusPositionByPercent(scrollPercent);
-            }else{
-                setBusPositionByPercent(autoPercent);
-            }
-            requestAnimationFrame(loop);
-        }
-        requestAnimationFrame(loop);
-        const observerOptions = {threshold:0.08,rootMargin:"0px 0px -40px 0px"};
-        const observer = new IntersectionObserver((entries)=>{
-            entries.forEach(entry=>{
-                if(entry.isIntersecting) entry.target.classList.add('visible');
+        function applyStockStates(){
+            document.querySelectorAll('.stock-item').forEach(item=>{
+                const isUp = item.dataset.up === "true";
+                const arrow = item.querySelector('.arrow');
+                if(arrow) arrow.textContent = isUp ? '▲' : '▼';
             });
-        },observerOptions);
-        document.querySelectorAll('.reveal-node').forEach(el=>observer.observe(el));
+        }
+        function setStockState(identifier, state){
+            let el = null;
+            if(typeof identifier === 'number'){
+                const list = document.querySelectorAll('.stock-item');
+                el = list[identifier] ?? null;
+            } else if(typeof identifier === 'string'){
+                el = document.querySelector(identifier);
+            } else if(identifier instanceof Element){
+                el = identifier;
+            }
+            if(!el) return false;
+            el.dataset.up = state ? "true" : "false";
+            const arrow = el.querySelector('.arrow');
+            if(arrow) arrow.textContent = state ? '▲' : '▼';
+            return true;
+        }
+        applyStockStates();
     </script>
     <script async src="https://www.tiktok.com/embed.js"></script>
 </body>

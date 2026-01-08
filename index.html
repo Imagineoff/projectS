@@ -15,10 +15,7 @@
             --text-muted: #9a9aa0;
             --accent: #FFC700;
             --accent-glow: rgba(255, 199, 0, 0.12);
-            --glass: rgba(28, 28, 30, 0.6);
             --border: rgba(255, 255, 255, 0.06);
-            --pos: #27ae60;
-            --neg: #e74c3c;
             --apple-ease: cubic-bezier(0.25, 1, 0.5, 1);
         }
         *{margin:0;padding:0;box-sizing:border-box}
@@ -82,14 +79,13 @@
         .promo-left{display:flex;flex-direction:column}
         .promo-date{color:var(--text-muted);font-size:13px;margin-bottom:6px}
         .promo-code{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,0.02);padding:10px 12px;border-radius:10px;border:1px dashed rgba(255,255,255,0.03)}
-        .promo-code button{background:transparent;border:none;color:var(--accent);font-weight:700;cursor:pointer;padding:6px 10px;border-radius:8px}
         .stocks-card{padding:18px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid var(--border)}
         .stocks-info{color:var(--text-muted);font-size:14px;margin-bottom:12px}
         .stock-list{display:flex;gap:12px;flex-wrap:wrap}
         .stock-item{flex:1 1 200px;display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.015),transparent);border:1px solid rgba(255,255,255,0.03)}
         .stock-left{display:flex;align-items:center;gap:10px}
         .stock-name{font-weight:700;color:white}
-        .stock-change{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--pos)}
+        .stock-change{display:flex;align-items:center;gap:8px;font-weight:700;color:#27ae60}
         .stock-change .arrow{font-size:14px}
         .community-grid{display:grid;grid-template-columns:350px 1fr;gap:18px;margin-top:18px}
         .discord-embed{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:rgba(0,0,0,0.45)}
@@ -100,23 +96,23 @@
         .social-actions a{padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);text-decoration:none;color:var(--text-main);font-weight:700}
         footer{border-top:1px solid var(--border);padding:60px 0 80px;text-align:center;color:var(--text-muted);font-size:14px;margin-top:36px}
         .bus-tracker-wrapper{
-            position:fixed;left:12px;top:0;height:100vh;width:84px;z-index:110;pointer-events:none;display:flex;align-items:center;justify-content:center
+            position:fixed;left:12px;top:0;height:100vh;width:84px;z-index:110;pointer-events:none;display:flex;align-items:flex-start;justify-content:center;padding-top:12px;
         }
         .bus-track-line{position:absolute;left:50%;transform:translateX(-50%);top:40px;bottom:40px;width:4px;background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border-radius:999px;opacity:0.7}
-        .bus-mover{position:absolute;left:50%;width:72px;will-change:transform;transition:transform .08s linear;transform:translate(-50%,var(--bus-y,0px)) rotate(90deg);transform-origin:center center;pointer-events:none}
+        .bus-mover{position:absolute;left:50%;top:0;width:72px;will-change:transform,top;transition:transform .12s linear, top .12s linear;transform:translateX(-50%) rotate(90deg);transform-origin:center center;pointer-events:none}
         .bus-graphic{width:72px;height:auto;display:block;border-radius:10px;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.7))}
-        .bus-badge{position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%) rotate(-90deg);background:rgba(0,0,0,0.6);padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);font-weight:700;color:var(--accent);font-size:13px;pointer-events:auto;white-space:nowrap}
+        .bus-badge{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);background:rgba(0,0,0,0.65);padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);font-weight:700;color:var(--accent);font-size:13px;pointer-events:auto;white-space:nowrap}
         @media (max-width:980px){
             .community-grid{grid-template-columns:1fr;align-items:start}
             .discord-embed iframe{height:360px}
         }
         @media (max-width:900px){
             .container{padding:18px 18px 140px}
-            .bus-tracker-wrapper{display:flex;left:50%;top:auto;bottom:12px;width:64px;height:160px;transform:translateX(-50%);pointer-events:auto}
-            .bus-track-line{left:50%;top:12px;bottom:12px}
+            .bus-tracker-wrapper{left:50%;bottom:12px;top:auto;width:64px;height:160px;transform:translateX(-50%);align-items:flex-start;padding-top:0;pointer-events:auto}
+            .bus-track-line{top:12px;bottom:12px}
             .bus-mover{width:54px}
             .bus-graphic{width:54px}
-            .bus-badge{left:calc(100% + 8px);font-size:12px;padding:5px 8px}
+            .bus-badge{font-size:12px;padding:5px 8px;top:calc(100% + 6px)}
             .feature-grid{gap:18px}
         }
     </style>
@@ -245,56 +241,39 @@
         const bus = document.getElementById('bus');
         const busLabel = document.getElementById('bus-label');
         const wrapper = document.querySelector('.bus-tracker-wrapper');
+        let lastUserInteraction = performance.now();
         function getScrollPercent(){
             const scrollTop = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight;
+            const docHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
             const winHeight = window.innerHeight;
-            const scrollPercent = scrollTop / (docHeight - winHeight || 1);
+            const denom = Math.max(docHeight - winHeight, 1);
+            const scrollPercent = scrollTop / denom;
             return Math.min(Math.max(scrollPercent, 0), 1);
         }
-        function computeTrackBounds(){
-            const wrapperRect = wrapper.getBoundingClientRect();
-            const trackTop = 40;
-            const trackBottom = Math.max(wrapperRect.height - 40, trackTop + 10);
+        function computeTrack(){
+            const pad = 40;
+            const wrapperHeight = wrapper.clientHeight;
+            const trackTop = pad;
+            const trackBottom = Math.max(wrapperHeight - pad, trackTop + 10);
             const busHeight = bus.offsetHeight || 72;
             const maxTravel = Math.max(trackBottom - trackTop - busHeight, 0);
             return {trackTop, maxTravel};
         }
-        let lastScrollTime = performance.now();
-        let autoStart = performance.now();
-        let ticking = false;
-        function updateBusPosition(autoPercent=null){
-            const now = performance.now();
-            const {trackTop, maxTravel} = computeTrackBounds();
-            const scrollPercent = getScrollPercent();
-            const useScroll = (now - lastScrollTime) < 1400;
-            const clamped = useScroll ? scrollPercent : (autoPercent !== null ? autoPercent : scrollPercent);
-            const currentY = trackTop + maxTravel * clamped;
-            bus.style.setProperty('--bus-y', `${currentY}px`);
+        function setBusPositionByPercent(pct){
+            const {trackTop, maxTravel} = computeTrack();
+            const clamped = Math.min(Math.max(pct, 0), 1);
+            const currentY = Math.round(trackTop + maxTravel * clamped);
+            bus.style.top = currentY + 'px';
             busLabel.innerText = Math.round(clamped * 100) + '%';
         }
-        window.addEventListener('scroll', function(){
-            lastScrollTime = performance.now();
-            if(!ticking){
-                window.requestAnimationFrame(function(){updateBusPosition();ticking=false});
-                ticking = true;
-            }
-        }, {passive:true});
-        window.addEventListener('resize', function(){
-            updateBusPosition();
-        });
-        ['wheel','touchstart','touchmove'].forEach(ev => {
-            window.addEventListener(ev, ()=>{ lastScrollTime = performance.now(); }, {passive:true});
-        });
-        function autoLoop(t){
-            const tsec = (t - autoStart)/1000;
-            const speed = 0.6;
-            const autoPercent = 0.5 + 0.5 * Math.sin(tsec * speed * Math.PI * 2 * 0.2);
-            updateBusPosition(autoPercent);
-            requestAnimationFrame(autoLoop);
+        function userInteracted(){
+            lastUserInteraction = performance.now();
         }
-        updateBusPosition();
-        requestAnimationFrame(autoLoop);
+        window.addEventListener('scroll', userInteracted, {passive:true});
+        window.addEventListener('wheel', userInteracted, {passive:true});
+        window.addEventListener('touchstart', userInteracted, {passive:true});
+        window.addEventListener('touchmove', userInteracted, {passive:true});
+        window.addEventListener('resize', ()=>{ setBusPositionByPercent(getScrollPercent()); });
         const promoText = document.getElementById('promo-text').innerText;
         const copyBtn = document.getElementById('copy-promo');
         copyBtn.addEventListener('click', async function(){
@@ -313,6 +292,20 @@
                 setTimeout(()=>copyBtn.innerText='Kopírovat',1400);
             }
         });
+        function loop(ts){
+            const autoPercent = 0.5 + 0.45 * Math.sin(ts/1000 * 0.6);
+            const scrollPercent = getScrollPercent();
+            const now = performance.now();
+            const interactionDelta = now - lastUserInteraction;
+            const followScroll = (interactionDelta < 900 && scrollPercent > 0.005) || scrollPercent > 0.01;
+            if(followScroll){
+                setBusPositionByPercent(scrollPercent);
+            }else{
+                setBusPositionByPercent(autoPercent);
+            }
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
         const observerOptions = {threshold:0.08,rootMargin:"0px 0px -40px 0px"};
         const observer = new IntersectionObserver((entries)=>{
             entries.forEach(entry=>{

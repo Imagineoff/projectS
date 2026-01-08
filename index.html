@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kladenské Dílny</title>
+    <title>Kladenské Dílny — Akcie (konfigurovatelné true/false)</title>
     <link rel="icon" href="https://i.imgur.com/tCvSBHQ.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,6 +17,11 @@
             --accent-glow: rgba(255, 199, 0, 0.12);
             --border: rgba(255, 255, 255, 0.06);
             --apple-ease: cubic-bezier(0.25, 1, 0.5, 1);
+
+            /* stock colors */
+            --up-color: #27ae60;
+            --down-color: #e74c3c;
+            --neutral-color: #9a9aa0;
         }
         *{margin:0;padding:0;box-sizing:border-box}
         html,body{height:100%}
@@ -85,10 +90,12 @@
         .stock-item{flex:1 1 200px;display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.015),transparent);border:1px solid rgba(255,255,255,0.03)}
         .stock-left{display:flex;align-items:center;gap:10px}
         .stock-name{font-weight:700;color:white}
-        .stock-change{display:flex;align-items:center;gap:8px;font-weight:700;color:#27ae60}
+        .stock-change{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--neutral-color)}
         .stock-change .arrow{font-size:14px}
-        .stock-item[data-up="true"] .stock-change{color:#27ae60}
-        .stock-item[data-up="false"] .stock-change{color:#e74c3c}
+        /* classes applied via JS */
+        .stock-change.up { color: var(--up-color); }
+        .stock-change.down { color: var(--down-color); }
+        .stock-change.neutral { color: var(--neutral-color); }
         .community-grid{display:grid;grid-template-columns:350px 1fr;gap:18px;margin-top:18px}
         .discord-embed{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:rgba(0,0,0,0.45)}
         .discord-embed iframe{width:100%;height:420px;border:0;display:block}
@@ -196,23 +203,24 @@
         <div class="bento-card stocks-card reveal-node">
             <div class="stocks-info">Akcie jsou součástí hry. Na našem Discordu si můžete otevřít ticket a investovat částku do akcií. Peníze můžete kdykoliv vybrat.</div>
             <div class="stock-list">
-                <div class="stock-item" data-up="true">
+                <!-- data-index atributy jsou důležité pro JS -->
+                <div class="stock-item" data-index="0">
                     <div class="stock-left">
                         <div class="stock-name">Akcie 1</div>
                     </div>
-                    <div class="stock-change"><span class="arrow">▲</span><span class="percent">12%</span></div>
+                    <div class="stock-change neutral"><span class="arrow" aria-hidden="true">–</span><span class="percent" aria-live="polite">0%</span></div>
                 </div>
-                <div class="stock-item" data-up="false">
+                <div class="stock-item" data-index="1">
                     <div class="stock-left">
                         <div class="stock-name">Akcie dva</div>
                     </div>
-                    <div class="stock-change"><span class="arrow">▼</span><span class="percent">-6%</span></div>
+                    <div class="stock-change neutral"><span class="arrow" aria-hidden="true">–</span><span class="percent" aria-live="polite">0%</span></div>
                 </div>
-                <div class="stock-item" data-up="true">
+                <div class="stock-item" data-index="2">
                     <div class="stock-left">
                         <div class="stock-name">Akcie 3</div>
                     </div>
-                    <div class="stock-change"><span class="arrow">▲</span><span class="percent">3%</span></div>
+                    <div class="stock-change neutral"><span class="arrow" aria-hidden="true">–</span><span class="percent" aria-live="polite">0%</span></div>
                 </div>
             </div>
         </div>
@@ -238,7 +246,110 @@
             <div class="bus-badge" id="bus-label">0%</div>
         </div>
     </div>
+
     <script>
+        /* ============================
+           KONFIGURACE AKCIÍ (Upravte tady)
+           - Pro každou akcii nastavte:
+                up: true  => zeleně s šipkou ▲ (růst)
+                up: false => červeně s šipkou ▼ (pokles)
+           - percent: číslo (např. 2.5 nebo -1.2). Pokud je percent === 0, zobrazí se "0%" a neutrální vzhled (–).
+           ============================ */
+
+        const stockConfig = [
+            { up: true,  percent: 2.4 },   // Akcie 1  -> změňte true/false
+            { up: false, percent: -0.8 },  // Akcie dva -> změňte true/false
+            { up: true,  percent: 0 }      // Akcie 3  -> true/false (0% bude neutral)
+        ];
+
+        /* ============================
+           Kód, který aplikuje konfiguraci na DOM
+           - Nemusíte nic měnit níže. Pokud byste chtěli měnit barvu za běhu,
+             použijte například v konzoli: setStock(1, true, 3.2);
+           ============================ */
+
+        function applyStockConfig(){
+            const items = document.querySelectorAll('.stock-item');
+            items.forEach(item => {
+                const idx = Number(item.dataset.index || 0);
+                const cfg = stockConfig[idx] || { up: true, percent: 0 };
+                const changeEl = item.querySelector('.stock-change');
+                const arrowEl = changeEl.querySelector('.arrow');
+                const pctEl = changeEl.querySelector('.percent');
+
+                // Clean previous classes
+                changeEl.classList.remove('up','down','neutral');
+
+                const pct = Number(cfg.percent) || 0;
+
+                if (pct === 0) {
+                    // neutral state
+                    changeEl.classList.add('neutral');
+                    arrowEl.textContent = '–';
+                    pctEl.textContent = '0%';
+                } else {
+                    // decide direction by cfg.up boolean
+                    if (cfg.up === true) {
+                        changeEl.classList.add('up');
+                        arrowEl.textContent = '▲';
+                    } else {
+                        changeEl.classList.add('down');
+                        arrowEl.textContent = '▼';
+                    }
+                    // Ensure percent value is shown as positive number with sign
+                    const display = Math.abs(pct).toFixed(1).replace(/\.0$/, '') + '%';
+                    pctEl.textContent = display;
+                }
+            });
+        }
+
+        // utility: nastavení jednotlivé akcie runtime (index 0-based)
+        function setStock(index, upBoolean, percentValue=0){
+            stockConfig[index] = { up: Boolean(upBoolean), percent: Number(percentValue) || 0 };
+            applyStockConfig();
+        }
+        // expose to window for quick console tweaks
+        window.setStock = setStock;
+        window.stockConfig = stockConfig;
+
+        /* ========== zbytek skriptů (původní funkce stránky) ========== */
+
+        const bus = document.getElementById('bus');
+        const busLabel = document.getElementById('bus-label');
+        const wrapper = document.querySelector('.bus-tracker-wrapper');
+        let lastUserInteraction = performance.now();
+        function getScrollPercent(){
+            const scrollTop = window.scrollY;
+            const docHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+            const winHeight = window.innerHeight;
+            const denom = Math.max(docHeight - winHeight, 1);
+            const scrollPercent = scrollTop / denom;
+            return Math.min(Math.max(scrollPercent, 0), 1);
+        }
+        function computeTrack(){
+            const pad = 40;
+            const wrapperHeight = wrapper.clientHeight;
+            const trackTop = pad;
+            const trackBottom = Math.max(wrapperHeight - pad, trackTop + 10);
+            const busHeight = bus.offsetHeight || 72;
+            const maxTravel = Math.max(trackBottom - trackTop - busHeight, 0);
+            return {trackTop, maxTravel};
+        }
+        function setBusPositionByPercent(pct){
+            const {trackTop, maxTravel} = computeTrack();
+            const clamped = Math.min(Math.max(pct, 0), 1);
+            const currentY = Math.round(trackTop + maxTravel * clamped);
+            bus.style.top = currentY + 'px';
+            busLabel.innerText = Math.round(clamped * 100) + '%';
+        }
+        function userInteracted(){
+            lastUserInteraction = performance.now();
+        }
+        window.addEventListener('scroll', userInteracted, {passive:true});
+        window.addEventListener('wheel', userInteracted, {passive:true});
+        window.addEventListener('touchstart', userInteracted, {passive:true});
+        window.addEventListener('touchmove', userInteracted, {passive:true});
+        window.addEventListener('resize', ()=>{ setBusPositionByPercent(getScrollPercent()); });
         const promoText = document.getElementById('promo-text').innerText;
         const copyBtn = document.getElementById('copy-promo');
         copyBtn.addEventListener('click', async function(){
@@ -257,30 +368,33 @@
                 setTimeout(()=>copyBtn.innerText='Kopírovat',1400);
             }
         });
-        function applyStockStates(){
-            document.querySelectorAll('.stock-item').forEach(item=>{
-                const isUp = item.dataset.up === "true";
-                const arrow = item.querySelector('.arrow');
-                if(arrow) arrow.textContent = isUp ? '▲' : '▼';
-            });
-        }
-        function setStockState(identifier, state){
-            let el = null;
-            if(typeof identifier === 'number'){
-                const list = document.querySelectorAll('.stock-item');
-                el = list[identifier] ?? null;
-            } else if(typeof identifier === 'string'){
-                el = document.querySelector(identifier);
-            } else if(identifier instanceof Element){
-                el = identifier;
+        function loop(ts){
+            const autoPercent = 0.5 + 0.45 * Math.sin(ts/1000 * 0.6);
+            const scrollPercent = getScrollPercent();
+            const now = performance.now();
+            const interactionDelta = now - lastUserInteraction;
+            const followScroll = (interactionDelta < 900 && scrollPercent > 0.005) || scrollPercent > 0.01;
+            if(followScroll){
+                setBusPositionByPercent(scrollPercent);
+            }else{
+                setBusPositionByPercent(autoPercent);
             }
-            if(!el) return false;
-            el.dataset.up = state ? "true" : "false";
-            const arrow = el.querySelector('.arrow');
-            if(arrow) arrow.textContent = state ? '▲' : '▼';
-            return true;
+            requestAnimationFrame(loop);
         }
-        applyStockStates();
+        requestAnimationFrame(loop);
+        const observerOptions = {threshold:0.08,rootMargin:"0px 0px -40px 0px"};
+        const observer = new IntersectionObserver((entries)=>{
+            entries.forEach(entry=>{
+                if(entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        },observerOptions);
+        document.querySelectorAll('.reveal-node').forEach(el=>observer.observe(el));
+
+        // Apply stocks on DOMContentLoaded so elements exist
+        document.addEventListener('DOMContentLoaded', function(){
+            applyStockConfig();
+        });
+
     </script>
     <script async src="https://www.tiktok.com/embed.js"></script>
 </body>

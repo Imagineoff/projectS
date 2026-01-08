@@ -123,6 +123,9 @@
             .bus-graphic{width:54px}
             .feature-grid{gap:18px}
         }
+        /* styles for music gallery overlay */
+        #music-gallery { pointer-events: auto; }
+        #music-image-wrapper { box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
     </style>
 </head>
 <body>
@@ -239,6 +242,18 @@
         
         </footer>
     </div>
+
+    <!-- Music gallery overlay: 1 play = 1 obrázek -->
+    <div id="music-gallery" style="position:fixed;right:20px;bottom:20px;z-index:120;pointer-events:auto">
+      <div id="music-image-wrapper" style="width:320px;height:180px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(6px);background:#0a0a0a;display:flex;align-items:center;justify-content:center;">
+        <img id="music-image" src="" alt="Music slide" style="width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .45s ease">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+        <button id="music-play-btn" class="btn-cta" aria-pressed="false" style="padding:8px 12px">Přehrát hudbu</button>
+        <button id="music-next-btn" class="btn-cta" style="padding:8px 12px">Další obrázek</button>
+      </div>
+    </div>
+
     <div class="bus-tracker-wrapper" aria-hidden="true">
         <div class="bus-track-line" aria-hidden="true"></div>
         <div class="bus-mover" id="bus">
@@ -396,6 +411,130 @@
         });
 
     </script>
+
+    <!-- MUSIC SCRIPT: 1 play = 1 obrázek -->
+    <script>
+    (function(){
+      // ---------- KONFIGURACE ----------
+      // Nahraď musicSrc URL skutečným souborem (podpora CORS pokud je mimo tvůj server)
+      const musicSrc = 'https://example.com/your-music-file.mp3';
+      // Seznam obrázků — dej sem tolik odkazů, kolik chcete "plays"
+      const imageList = [
+        'https://i.imgur.com/1.jpg',
+        'https://i.imgur.com/2.jpg',
+        'https://i.imgur.com/3.jpg'
+      ];
+      // Chování: 'ended' => změna po úplném dohrání; 'play' => změna hned při startu
+      const advanceOn = 'ended';
+      // ---------------------------------
+
+      const playBtn = document.getElementById('music-play-btn');
+      const nextBtn = document.getElementById('music-next-btn');
+      const imgEl = document.getElementById('music-image');
+
+      // Audio objekt (skrytě)
+      const audio = new Audio();
+      audio.src = musicSrc;
+      audio.preload = 'auto';
+      audio.loop = false; // pokud potřebuješ smyčku, uprav níže i logiku počítání
+      audio.crossOrigin = 'anonymous';
+
+      let playCount = 0;    // kolikrát hudba dohrála (plné přehrání)
+      let imageIndex = 0;
+      const totalImages = imageList.length;
+
+      // Preload obrázků
+      imageList.forEach(src => {
+        const i = new Image();
+        i.src = src;
+      });
+
+      // Zobraz obrázek s fade efektem
+      function showImage(index){
+        if (totalImages === 0) return;
+        index = ((index % totalImages) + totalImages) % totalImages;
+        const src = imageList[index];
+        imgEl.style.opacity = 0;
+        setTimeout(()=> {
+          imgEl.src = src;
+          imgEl.alt = `Slide ${index+1}`;
+          // když je načtený, fade in
+          imgEl.onload = () => { imgEl.style.opacity = 1; };
+        }, 90);
+      }
+
+      // Volá se, když jedno "play" (dohraje) proběhne
+      function onOnePlayCompleted(){
+        playCount++;
+        imageIndex = imageIndex + 1;
+        if (imageIndex >= totalImages){
+          // chování po dosažení konce obrázků:
+          // současná volba: smyčka (vrátí na začátek)
+          imageIndex = imageIndex % totalImages;
+          // pokud chceš po vyčerpání zastavit, místo výše napiš:
+          // audio.pause(); playBtn.disabled = true;
+        }
+        showImage(imageIndex);
+        // debug
+        console.log('Hudba dohrála. PlayCount:', playCount, 'Nový obrázek index:', imageIndex);
+      }
+
+      // Připojení eventu podle advanceOn
+      if (advanceOn === 'ended'){
+        audio.addEventListener('ended', onOnePlayCompleted);
+      } else if (advanceOn === 'play'){
+        // pozor: play se volá i při resume; pokud nechceš double-count, přidej ochranu
+        let lastPlayTime = 0;
+        audio.addEventListener('play', function(){
+          const now = Date.now();
+          if (now - lastPlayTime > 300) {
+            lastPlayTime = now;
+            onOnePlayCompleted();
+          }
+        });
+      }
+
+      // Play/pause tlačítko (uživatelské gesto)
+      playBtn.addEventListener('click', async function(){
+        try {
+          if (audio.paused) {
+            await audio.play();
+            playBtn.innerText = 'Pozastavit hudbu';
+            playBtn.setAttribute('aria-pressed','true');
+          } else {
+            audio.pause();
+            playBtn.innerText = 'Přehrát hudbu';
+            playBtn.setAttribute('aria-pressed','false');
+          }
+        } catch (err) {
+          console.warn('Playback failed:', err);
+          playBtn.innerText = 'Klikni ještě jednou';
+        }
+      });
+
+      // Manuální přeskočení obrázku
+      nextBtn.addEventListener('click', function(){
+        imageIndex = (imageIndex + 1) % totalImages;
+        showImage(imageIndex);
+      });
+
+      // Inicializace: ukaž první obrázek
+      if (totalImages > 0) showImage(0);
+
+      // Exponuj API pro ladění v konzoli
+      window.KDMusic = {
+        audio,
+        showImage,
+        imageList,
+        get state(){ return { playCount, imageIndex, totalImages, paused: audio.paused }; },
+        setImageIndex(i){ imageIndex = i; showImage(imageIndex); }
+      };
+
+      // Pokud chceš detekovat loopované audio (audio.loop === true), 'ended' se nevyvolá.
+      // Nabízím jednoduchý fallback: pokud chceš počítat opakování i při loop=true, můžeme sledovat timeupdate a detekovat reset currentTime -> dej vědět.
+    })();
+    </script>
+
     <script async src="https://www.tiktok.com/embed.js"></script>
 </body>
 </html>

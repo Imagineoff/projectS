@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kladenské Dílny</title>
+    <title>Kladenské Dílny | Prezentace</title>
     <link rel="icon" href="https://i.imgur.com/tCvSBHQ.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,17 +14,14 @@
             --text-main: #ffffff;
             --text-muted: #9a9aa0;
             --accent: #FFC700;
-            --accent-glow: rgba(255, 199, 0, 0.12);
+            --accent-glow: rgba(255, 199, 0, 0.2);
             --border: rgba(255, 255, 255, 0.06);
             --apple-ease: cubic-bezier(0.25, 1, 0.5, 1);
-
-            /* stock colors */
             --up-color: #27ae60;
             --down-color: #e74c3c;
             --neutral-color: #9a9aa0;
         }
         *{margin:0;padding:0;box-sizing:border-box}
-        html,body{height:100%}
         body{
             background-color:var(--bg);
             color:var(--text-main);
@@ -32,13 +29,10 @@
             overflow-x:hidden;
             line-height:1.5;
             -webkit-font-smoothing:antialiased;
-            -moz-osx-font-smoothing:grayscale;
         }
         .ambient-bg{
             position:fixed;inset:0;height:100vh;z-index:-2;
-            background:
-                radial-gradient(circle at 18% 50%, rgba(255,199,0,0.06), transparent 20%),
-                radial-gradient(circle at 82% 30%, rgba(50,50,255,0.03), transparent 25%);
+            background: radial-gradient(circle at 18% 50%, rgba(255,199,0,0.06), transparent 20%);
             filter:blur(36px);
         }
         .grid-lines{
@@ -46,130 +40,86 @@
             background-image:linear-gradient(var(--border) 1px, transparent 1px);
             background-size:100% 120px;opacity:0.12;
             mask-image:linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
-            -webkit-mask-image:linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
         }
-        .container{
-            max-width:1080px;margin:0 auto;padding:28px 28px 220px;position:relative;z-index:2;
-        }
+        .container{max-width:1080px;margin:0 auto;padding:28px 28px 100px;position:relative;z-index:2}
         h1,h2,h3{font-family:'Kanit',sans-serif;letter-spacing:-0.02em}
+        
         header{display:flex;justify-content:space-between;align-items:center;padding:20px 0;margin-bottom:48px}
         .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:white;font-weight:700;font-size:18px;text-transform:uppercase}
         .brand img{width:44px;height:44px;border-radius:8px}
         nav{display:flex;align-items:center}
         .nav-link{color:var(--text-muted);text-decoration:none;font-size:14px;font-weight:600;margin-left:18px;transition:color .2s}
         .nav-link:hover{color:white}
-        .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;text-align:center;perspective:1000px;padding:20px 0}
-        .hero h1{font-size:clamp(36px,7vw,72px);line-height:1.05;font-weight:800;background:linear-gradient(180deg,#fff 0%,#b9b9bf 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;filter:drop-shadow(0 6px 30px rgba(255,255,255,0.05))}
-        .hero p{font-size:clamp(16px,2.6vw,20px);color:var(--text-muted);max-width:720px;margin:0 auto 20px;font-weight:300}
-        .btn-cta{display:inline-block;background:var(--accent);color:#111;padding:12px 28px;border-radius:999px;font-weight:700;text-decoration:none;font-size:14px;box-shadow:0 6px 30px var(--accent-glow);transition:transform .18s}
-        .btn-cta:hover{transform:translateY(-4px)}
-        .discord-btn{background:#5865F2;color:white;padding:10px 22px;border-radius:18px;font-weight:700}
-        .reveal-node{opacity:0;transform:translateY(30px) scale(.99);filter:blur(8px);transition:all 0.9s var(--apple-ease)}
-        .reveal-node.visible{opacity:1;transform:none;filter:blur(0)}
-        .feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;margin:48px 0}
-        .bento-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid var(--border);border-radius:18px;padding:26px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:relative;overflow:hidden;transition:transform .35s var(--apple-ease),box-shadow .35s}
-        .bento-card:hover{transform:translateY(-6px);box-shadow:0 10px 40px rgba(0,0,0,0.6)}
-        .bento-card h3{font-size:20px;color:var(--accent);margin-bottom:10px}
-        .bento-card p{color:var(--text-muted);font-size:15px}
-        .big-card{grid-column:1/-1}
-        .section-title{display:flex;justify-content:space-between;align-items:center;margin:36px 0 12px}
-        .section-title h2{font-size:22px;color:white}
-        .kd-coin{
-            display:flex;align-items:center;gap:16px;padding:18px;border-radius:14px;background:linear-gradient(135deg,rgba(39,174,96,0.06),rgba(255,199,0,0.03));border:1px solid rgba(39,174,96,0.12)
+
+        .hero{min-height:40vh;display:flex;flex-direction:column;justify-content:center;text-align:center;padding:40px 0}
+        .hero h1{font-size:clamp(36px,7vw,72px);background:linear-gradient(180deg,#fff 0%,#b9b9bf 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        
+        .btn-cta{display:inline-block;background:var(--accent);color:#111;padding:12px 28px;border-radius:999px;font-weight:700;text-decoration:none;font-size:14px;box-shadow:0 6px 30px var(--accent-glow);transition:transform .18s;border:none;cursor:pointer}
+        .btn-cta:hover{transform:translateY(-2px)}
+
+        /* Presentation Section */
+        .section-title{margin:36px 0 12px}
+        .bento-card{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:18px;padding:26px;backdrop-filter:blur(12px)}
+        
+        /* FULLSCREEN OVERLAY */
+        #presentation-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: none; /* Skryté defaultně */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
-        .kd-coin .icon{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--accent),#f5d35c);box-shadow:0 8px 24px rgba(255,199,0,0.06)}
-        .kd-coin .meta h3{font-size:18px;color:white;margin-bottom:4px}
-        .kd-coin .meta p{color:var(--text-muted);font-size:14px}
-        .promo-card{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid var(--border)}
-        .promo-left{display:flex;flex-direction:column}
-        .promo-date{color:var(--text-muted);font-size:13px;margin-bottom:6px}
-        .promo-code{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,0.02);padding:10px 12px;border-radius:10px;border:1px dashed rgba(255,255,255,0.03)}
-        .stocks-card{padding:18px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid var(--border)}
-        .stocks-info{color:var(--text-muted);font-size:14px;margin-bottom:12px}
-        .stock-list{display:flex;gap:12px;flex-wrap:wrap}
-        .stock-item{flex:1 1 200px;display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.015),transparent);border:1px solid rgba(255,255,255,0.03)}
-        .stock-left{display:flex;align-items:center;gap:10px}
-        .stock-name{font-weight:700;color:white}
-        .stock-change{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--neutral-color)}
-        .stock-change .arrow{font-size:14px}
-        /* classes applied via JS */
-        .stock-change.up { color: var(--up-color); }
-        .stock-change.down { color: var(--down-color); }
-        .stock-change.neutral { color: var(--neutral-color); }
-        .community-grid{display:grid;grid-template-columns:350px 1fr;gap:18px;margin-top:18px}
-        .discord-embed{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:rgba(0,0,0,0.45)}
-        .discord-embed iframe{width:100%;height:420px;border:0;display:block}
-        .social-card{padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid var(--border);display:flex;flex-direction:column;gap:12px;justify-content:center}
-        .social-card a{display:inline-block;text-decoration:none;color:var(--text-main);font-weight:700}
-        .social-actions{display:flex;gap:10px;align-items:center}
-        .social-actions a{padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);text-decoration:none;color:var(--text-main);font-weight:700}
-        footer{border-top:1px solid var(--border);padding:60px 0 80px;text-align:center;color:var(--text-muted);font-size:14px;margin-top:36px}
-        .bus-tracker-wrapper{
-            position:fixed;left:0;top:0;height:100vh;width:84px;z-index:110;pointer-events:none;display:flex;align-items:flex-start;justify-content:flex-start;padding-top:12px;
+        #presentation-overlay.active {
+            display: flex;
+            opacity: 1;
         }
-        .bus-track-line{position:absolute;left:50%;transform:translateX(-50%);top:40px;bottom:40px;width:4px;background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border-radius:999px;opacity:0.7}
-        .bus-mover{position:absolute;left:0;top:0;width:72px;will-change:transform,top;transition:transform .12s linear, top .12s linear;transform:translateX(-10px) rotate(90deg);transform-origin:center center;pointer-events:none}
-        .bus-graphic{width:72px;height:auto;display:block;border-radius:10px;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.7))}
-        .bus-badge{display:none}
-        @media (min-width:901px){
-            .bus-tracker-wrapper{width:84px}
-            .bus-mover{transform:translateX(0) rotate(90deg)}
-            .bus-badge{display:block;position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%) rotate(-90deg);background:rgba(0,0,0,0.6);padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);font-weight:700;color:var(--accent);font-size:13px;pointer-events:auto;white-space:nowrap}
+        .overlay-image-container {
+            width: 80%;
+            max-width: 1000px;
+            aspect-ratio: 16/9;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 100px rgba(255,199,0,0.1);
         }
-        @media (max-width:900px){
-            .container{padding:18px 18px 140px}
-            .bus-tracker-wrapper{width:64px}
-            .bus-mover{width:54px;transform:translateX(-8px) rotate(90deg)}
-            .bus-graphic{width:54px}
-            .feature-grid{gap:18px}
+        .overlay-image-container img {
+            width: 100%; height: 100%; object-fit: cover;
+            position: absolute; inset: 0;
+            opacity: 0; transition: opacity 0.8s ease;
+        }
+        .overlay-image-container img.active { opacity: 1; }
+        
+        .overlay-controls {
+            margin-top: 30px;
+            text-align: center;
+            color: white;
+            z-index: 10000;
+        }
+        .close-overlay {
+            position: absolute; top: 30px; right: 40px;
+            background: none; border: 1px solid rgba(255,255,255,0.2);
+            color: white; padding: 10px 20px; border-radius: 8px;
+            cursor: pointer; font-weight: 600;
         }
 
-        /* Presentation section styles */
-        .presentation-card {
-            display:flex;
-            gap:20px;
-            align-items:center;
-            padding:18px;
-            border-radius:14px;
-            background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);
-            border:1px solid var(--border);
-        }
-        .presentation-image {
-            width:520px;
-            max-width:100%;
-            height:300px;
-            border-radius:12px;
-            overflow:hidden;
-            background:#070707;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-        }
-        .presentation-image img {
-            width:100%;
-            height:100%;
-            object-fit:cover;
-            display:block;
-            opacity:0;
-            transition:opacity .45s ease;
-        }
-        .presentation-controls {
-            display:flex;
-            flex-direction:column;
-            gap:10px;
-            justify-content:flex-start;
-            min-width:220px;
-        }
-        .presentation-controls .small {
-            padding:8px 12px;
-            font-size:13px;
-        }
-        .muted-note { color:var(--text-muted); font-size:13px; margin-top:8px; }
+        /* Bus Tracker */
+        .bus-tracker-wrapper{position:fixed;left:0;top:0;height:100vh;width:84px;z-index:110;pointer-events:none}
+        .bus-mover{position:absolute;left:10px;width:60px;transition:top .1s linear;transform:rotate(90deg)}
+        .bus-graphic{width:100%;filter:drop-shadow(0 0 10px rgba(0,0,0,0.5))}
+
+        .reveal-node{opacity:0;transform:translateY(20px);transition:all 0.6s ease-out}
+        .reveal-node.visible{opacity:1;transform:translateY(0)}
     </style>
 </head>
 <body>
     <div class="ambient-bg"></div>
     <div class="grid-lines"></div>
+
     <div class="container">
         <header class="reveal-node">
             <a href="#" class="brand">
@@ -177,425 +127,130 @@
                 <span>Kladenské Dílny</span>
             </a>
             <nav>
-                <a href="https://discord.com/servers/kladenske-dilny-822122237258760192" class="nav-link" target="_blank" rel="noopener">Discord</a>
-                <a href="https://tiktok.com/@kladnoworkshops" class="nav-link" target="_blank" rel="noopener">TikTok</a>
-                <a href="#" class="nav-link">Roblox</a>
+                <a href="#" class="nav-link">Discord</a>
+                <a href="#" class="nav-link">TikTok</a>
             </nav>
         </header>
 
         <section class="hero">
             <h1 class="reveal-node">Tvoje cesta.<br>Náš standard.</h1>
-            <p class="reveal-node">Kladenské dílny přináší revoluci do Roblox dopravy. Precizní modely, skvělá komunita a inovativní systémy.</p>
-            <div class="reveal-node" style="margin-top:18px">
-                <a href="#about" class="btn-cta">Zjistit více</a>
-            </div>
+            <p class="reveal-node" style="color:var(--text-muted); margin: 20px 0;">Zažij novou úroveň dopravy v Robloxu.</p>
         </section>
 
-        <!-- ========== NOVÁ SEKCE: Prezentace (hudba -> obrázky) ========== -->
-        <div class="section-title" id="presentation">
-            <h2>Prezentace — hudba & obrázky</h2>
+        <div class="section-title reveal-node">
+            <h2>Speciální Prezentace</h2>
         </div>
 
-        <div class="bento-card reveal-node presentation-card" role="region" aria-label="Prezentace hudby a obrázků">
-            <div class="presentation-image" aria-hidden="false">
-                <img id="presentation-image" src="" alt="Prezentace slide">
-            </div>
-            <div class="presentation-controls">
-                <div style="display:flex;gap:8px;flex-wrap:wrap">
-                    <button id="start-presentation" class="btn-cta">Spustit prezentaci</button>
-                    <button id="pause-presentation" class="btn-cta small" style="background:transparent;border:1px solid rgba(255,255,255,0.04)">Pauza</button>
-                    <button id="stop-presentation" class="btn-cta small" style="background:transparent;border:1px solid rgba(255,255,255,0.04)">Zastavit</button>
-                    <button id="next-slide" class="btn-cta small" style="background:transparent;border:1px solid rgba(255,255,255,0.04)">Další obrázek</button>
-                </div>
-                <div class="muted-note">
-                    Každé **úplné dohrání** skladby změní obrázek (1 play = 1 obrázek). První kliknutím na "Spustit prezentaci" dovolíš prohlížeči spustit audio.
-                </div>
-                <div style="margin-top:8px;color:var(--text-muted);font-size:13px">
-                    Stav: <span id="presentation-status">stopped</span>
-                    &nbsp;•&nbsp; Nahráno: <span id="presentation-playcount">0</span>
-                    &nbsp;•&nbsp; Obrázek: <span id="presentation-index">0</span>/<span id="presentation-total">0</span>
-                </div>
-            </div>
+        <div class="bento-card reveal-node" style="text-align: center;">
+            <p style="margin-bottom: 20px; color: var(--text-muted);">Po kliknutí se stránka zatemní a spustí se hudební prezentace.<br>Každé dohrání skladby přepne na další obrázek.</p>
+            <button id="start-btn" class="btn-cta">Spustit zážitek</button>
         </div>
-        <!-- ========== KONEC SEKCE PREZENTACE ========== -->
-
-        <section id="about" class="feature-grid">
-            <div class="bento-card reveal-node">
-                <h3>Kvalita</h3>
-                <p>Každý autobus je modelován s důrazem na realismus. Od textur sedadel po zvuky motoru. Nic nenecháváme náhodě.</p>
-            </div>
-            <div class="bento-card reveal-node" style="transition-delay:0.06s">
-                <h3>Ekonomika</h3>
-                <p>Náš server využívá unikátní měnový systém. Získej role, kupuj exkluzivní vozidla a staň se dopravním magnátem.</p>
-            </div>
-            <div class="bento-card reveal-node" style="transition-delay:0.12s">
-                <h3>Komunita</h3>
-                <p>Jsme víc než jen obchod. Jsme komunita nadšenců do dopravy. Přidej se k nám na Discordu.</p>
-                <div style="margin-top:12px">
-                    <a href="https://discord.com/servers/kladenske-dilny-822122237258760192" class="discord-btn" target="_blank" rel="noopener">Připojit se</a>
-                </div>
-            </div>
-            <div class="bento-card reveal-node big-card" style="transition-delay:0.18s">
-                <h3>Transparency & Trust</h3>
-                <p>Férové ceny, žádné skryté poplatky a přímá komunikace s vývojáři. To je Kladenský Standard.</p>
-            </div>
-        </section>
-
-        <div class="section-title">
-            <h2>KD Coin</h2>
-        </div>
-        <div class="bento-card kd-coin reveal-node">
-            <div class="icon">
-                <img src="https://i.imgur.com/eT8Ttvc.png" alt="KD Coin" style="width:38px;height:38px">
-            </div>
-            <div class="meta">
-                <h3>KD Coin</h3>
-                <p>Virtuální měna na našem Discord serveru. Za KD Coin lze kupovat role a další herní výhody.</p>
-            </div>
-            <div style="margin-left:auto">
-                <a href="#stocks" class="btn-cta">Investovat</a>
-            </div>
-        </div>
-
-        <div style="height:18px"></div>
-
-        <div class="section-title">
-            <h2>Daily promokód</h2>
-        </div>
-        <div class="promo-card reveal-node" role="region" aria-label="Promokód">
-            <div class="promo-left">
-                <div class="promo-date">Datum: 1.1.2026</div>
-                <div class="promo-code">Kód: <strong id="promo-text">test</strong></div>
-            </div>
-            <div style="display:flex;gap:10px;align-items:center">
-                <button id="copy-promo" class="btn-cta" aria-label="Kopírovat promokód" style="pointer-events:auto">Kopírovat</button>
-            </div>
-        </div>
-
-        <div style="height:18px"></div>
-
-        <div class="section-title" id="stocks">
-            <h2>Akcie</h2>
-        </div>
-        <div class="bento-card stocks-card reveal-node">
-            <div class="stocks-info">Akcie jsou součástí hry. Na našem Discordu si můžete otevřít ticket a investovat částku do akcií. Peníze můžete kdykoliv vybrat.</div>
-            <div class="stock-list">
-                <!-- data-index atributy jsou důležité pro JS -->
-                <div class="stock-item" data-index="0">
-                    <div class="stock-left">
-                        <div class="stock-name">Agrofert</div>
-                    </div>
-                    <div class="stock-change neutral"><span class="arrow" aria-hidden="true">–</span><span class="percent" aria-live="polite">0%</span></div>
-                </div>
-                <div class="stock-item" data-index="1">
-                    <div class="stock-left">
-                        <div class="stock-name">Kaufland</div>
-                    </div>
-                    <div class="stock-change neutral"><span class="arrow" aria-hidden="true">–</span><span class="percent" aria-live="polite">0%</span></div>
-                </div>
-                <div class="stock-item" data-index="2">
-                    <div class="stock-left">
-                        <div class="stock-name">KD Casino</div>
-                    </div>
-                    <div class="stock-change neutral"><span class="arrow" aria-hidden="true">–</span><span class="percent" aria-live="polite">0%</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div style="height:18px"></div>
-
-        <div class="section-title">
-            <h2>Komunita</h2>
-        </div>
-        <div class="community-grid reveal-node">
-            <div class="discord-embed">
-                <iframe src="https://discord.com/widget?id=822122237258760192&theme=dark" allowtransparency="true" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
-            </div>
-
-        <div style="height:40vh"></div>
-        <footer class="reveal-node">
-            <p>&copy; 2026 Kladenské Dílny. Všechna práva vyhrazena.</p>
-
-        </footer>
     </div>
 
-    <div class="bus-tracker-wrapper" aria-hidden="true">
-        <div class="bus-track-line" aria-hidden="true"></div>
+    <div id="presentation-overlay">
+        <button class="close-overlay" id="close-btn">Zavřít (ESC)</button>
+        
+        <div class="overlay-image-container" id="img-container">
+            </div>
+
+        <div class="overlay-controls">
+            <div id="slide-info" style="font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-bottom: 5px;">Snímek 1 / 3</div>
+            <div id="play-status" style="font-size: 0.9rem; color: #666;">Přehrávání hudby...</div>
+        </div>
+    </div>
+
+    <div class="bus-tracker-wrapper">
         <div class="bus-mover" id="bus">
-            <img src="https://i.imgur.com/ahYsvMG.png" class="bus-graphic" alt="KD Bus">
-            <div class="bus-badge" id="bus-label">0%</div>
+            <img src="https://i.imgur.com/ahYsvMG.png" class="bus-graphic" alt="Bus">
         </div>
     </div>
 
     <script>
         /* ============================
-           KONFIGURACE AKCIÍ (Upravte tady)
+           KONFIGURACE PREZENTACE
            ============================ */
-        const stockConfig = [
-            { up: true,  percent: 2.4 },
-            { up: false, percent: -0.8 },
-            { up: true,  percent: 0 }
-        ];
-        function applyStockConfig(){
-            const items = document.querySelectorAll('.stock-item');
-            items.forEach(item => {
-                const idx = Number(item.dataset.index || 0);
-                const cfg = stockConfig[idx] || { up: true, percent: 0 };
-                const changeEl = item.querySelector('.stock-change');
-                const arrowEl = changeEl.querySelector('.arrow');
-                const pctEl = changeEl.querySelector('.percent');
-                changeEl.classList.remove('up','down','neutral');
-                const pct = Number(cfg.percent) || 0;
-                if (pct === 0) {
-                    changeEl.classList.add('neutral');
-                    arrowEl.textContent = '–';
-                    pctEl.textContent = '0%';
-                } else {
-                    if (cfg.up === true) {
-                        changeEl.classList.add('up');
-                        arrowEl.textContent = '▲';
-                    } else {
-                        changeEl.classList.add('down');
-                        arrowEl.textContent = '▼';
-                    }
-                    const display = Math.abs(pct).toFixed(1).replace(/\.0$/, '') + '%';
-                    pctEl.textContent = display;
-                }
-            });
-        }
-        function setStock(index, upBoolean, percentValue=0){
-            stockConfig[index] = { up: Boolean(upBoolean), percent: Number(percentValue) || 0 };
-            applyStockConfig();
-        }
-        window.setStock = setStock;
-        window.stockConfig = stockConfig;
+        const config = {
+            audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // NAHRAĎ SVOU HUDBOU
+            images: [
+                'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=1000', 
+                'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&q=80&w=1000',
+                'https://images.unsplash.com/photo-1562620644-66ba476f4bc2?auto=format&fit=crop&q=80&w=1000'
+            ]
+        };
 
-        /* ========== BUS TRACKER & ANIMACE (původní) ========== */
-        const bus = document.getElementById('bus');
-        const busLabel = document.getElementById('bus-label');
-        const wrapper = document.querySelector('.bus-tracker-wrapper');
-        let lastUserInteraction = performance.now();
-        function getScrollPercent(){
-            const scrollTop = window.scrollY;
-            const docHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
-            const winHeight = window.innerHeight;
-            const denom = Math.max(docHeight - winHeight, 1);
-            const scrollPercent = scrollTop / denom;
-            return Math.min(Math.max(scrollPercent, 0), 1);
+        // Elementy
+        const startBtn = document.getElementById('start-btn');
+        const overlay = document.getElementById('presentation-overlay');
+        const closeBtn = document.getElementById('close-btn');
+        const imgContainer = document.getElementById('img-container');
+        const slideInfo = document.getElementById('slide-info');
+        
+        let currentIndex = 0;
+        const audio = new Audio(config.audioSrc);
+
+        // Inicializace obrázků do overlaye
+        config.images.forEach((src, idx) => {
+            const img = document.createElement('img');
+            img.src = src;
+            if(idx === 0) img.classList.add('active');
+            imgContainer.appendChild(img);
+        });
+
+        const allImages = imgContainer.querySelectorAll('img');
+
+        function updateSlide(index) {
+            allImages.forEach(img => img.classList.remove('active'));
+            allImages[index].classList.add('active');
+            slideInfo.innerText = `Snímek ${index + 1} / ${config.images.length}`;
         }
-        function computeTrack(){
-            const pad = 40;
-            const wrapperHeight = wrapper.clientHeight;
-            const trackTop = pad;
-            const trackBottom = Math.max(wrapperHeight - pad, trackTop + 10);
-            const busHeight = bus.offsetHeight || 72;
-            const maxTravel = Math.max(trackBottom - trackTop - busHeight, 0);
-            return {trackTop, maxTravel};
-        }
-        function setBusPositionByPercent(pct){
-            const {trackTop, maxTravel} = computeTrack();
-            const clamped = Math.min(Math.max(pct, 0), 1);
-            const currentY = Math.round(trackTop + maxTravel * clamped);
-            bus.style.top = currentY + 'px';
-            busLabel.innerText = Math.round(clamped * 100) + '%';
-        }
-        function userInteracted(){
-            lastUserInteraction = performance.now();
-        }
-        window.addEventListener('scroll', userInteracted, {passive:true});
-        window.addEventListener('wheel', userInteracted, {passive:true});
-        window.addEventListener('touchstart', userInteracted, {passive:true});
-        window.addEventListener('touchmove', userInteracted, {passive:true});
-        window.addEventListener('resize', ()=>{ setBusPositionByPercent(getScrollPercent()); });
-        function loop(ts){
-            const autoPercent = 0.5 + 0.45 * Math.sin(ts/1000 * 0.6);
-            const scrollPercent = getScrollPercent();
-            const now = performance.now();
-            const interactionDelta = now - lastUserInteraction;
-            const followScroll = (interactionDelta < 900 && scrollPercent > 0.005) || scrollPercent > 0.01;
-            if(followScroll){
-                setBusPositionByPercent(scrollPercent);
-            }else{
-                setBusPositionByPercent(autoPercent);
+
+        // Spuštění
+        startBtn.addEventListener('click', () => {
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Zákaz scrollování
+            currentIndex = 0;
+            updateSlide(currentIndex);
+            audio.currentTime = 0;
+            audio.play();
+        });
+
+        // Logika přepínání: 1 PLAY = 1 OBRÁZEK
+        audio.addEventListener('ended', () => {
+            currentIndex++;
+            if (currentIndex < config.images.length) {
+                updateSlide(currentIndex);
+                audio.currentTime = 0;
+                audio.play();
+            } else {
+                // Koniec prezentace
+                exitPresentation();
             }
-            requestAnimationFrame(loop);
+        });
+
+        function exitPresentation() {
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            audio.pause();
         }
-        requestAnimationFrame(loop);
-        const observerOptions = {threshold:0.08,rootMargin:"0px 0px -40px 0px"};
-        const observer = new IntersectionObserver((entries)=>{
-            entries.forEach(entry=>{
+
+        closeBtn.addEventListener('click', exitPresentation);
+        window.addEventListener('keydown', (e) => { if(e.key === 'Escape') exitPresentation(); });
+
+        /* BUS TRACKER LOGIKA */
+        const bus = document.getElementById('bus');
+        window.addEventListener('scroll', () => {
+            const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+            const trackHeight = window.innerHeight - 100;
+            bus.style.top = (scrollPercent * trackHeight) + 50 + 'px';
+        });
+
+        /* REVEAL ANIMACE */
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
                 if(entry.isIntersecting) entry.target.classList.add('visible');
             });
-        },observerOptions);
-        document.querySelectorAll('.reveal-node').forEach(el=>observer.observe(el));
-        document.addEventListener('DOMContentLoaded', function(){ applyStockConfig(); });
-
-        /* ============================
-           MUSIC / PRESENTATION SCRIPT
-           - 1 PLAY = 1 OBRÁZEK
-           - Sekce s tlačítky (Start / Pauza / Stop / Další)
-           ============================ */
-        (function(){
-          // --------- NASTAVENÍ ----------
-          // 1) URL mp3 - nahraď svou cestou (CORS pokud je mimo doménu)
-          const musicSrc = 'https://example.com/your-music-file.mp3';
-
-          // 2) seznam obrázků (počet obrázků = počet slideů)
-          const imageList = [
-            'https://i.imgur.com/yourImage1.jpg',
-            'https://i.imgur.com/yourImage2.jpg',
-            'https://i.imgur.com/yourImage3.jpg'
-          ];
-
-          // 3) cycles = kolikrát celkem přehrát hudbu (každé ended++ = další obrázek)
-          // Pokud chceš jen jednou projít přes všechny obrázky, nastav cycles = imageList.length
-          // Pokud chceš aby se přehrálo víc než počet obrázků, nastav cycles = větší číslo; obrázky se budou opakovat v cyklu.
-          const cycles = imageList.length; // změň pokud chceš jinak
-          // --------------------------------
-
-          // elements
-          const startBtn = document.getElementById('start-presentation');
-          const pauseBtn = document.getElementById('pause-presentation');
-          const stopBtn = document.getElementById('stop-presentation');
-          const nextBtn = document.getElementById('next-slide');
-          const imgEl = document.getElementById('presentation-image');
-          const statusEl = document.getElementById('presentation-status');
-          const playcountEl = document.getElementById('presentation-playcount');
-          const indexEl = document.getElementById('presentation-index');
-          const totalEl = document.getElementById('presentation-total');
-
-          // state
-          let isRunning = false;
-          let playCount = 0;      // počet úplných přehrání (ended events)
-          let imageIndex = 0;     // aktuální obrázek (0-based)
-          let remainingCycles = cycles;
-
-          // audio
-          const audio = new Audio();
-          audio.src = musicSrc;
-          audio.preload = 'auto';
-          audio.loop = false; // loopujeme manuálně podle cycles
-          audio.crossOrigin = 'anonymous';
-
-          // Preload images
-          imageList.forEach(s => { const i=new Image(); i.src=s; });
-
-          function updateUI(){
-            statusEl.innerText = isRunning ? (audio.paused ? 'paused' : 'playing') : 'stopped';
-            playcountEl.innerText = playCount;
-            indexEl.innerText = (imageIndex % imageList.length) + 1;
-            totalEl.innerText = imageList.length;
-            startBtn.disabled = isRunning && !audio.paused;
-            pauseBtn.disabled = !isRunning;
-            stopBtn.disabled = !isRunning;
-          }
-
-          function showImage(i){
-            if (imageList.length === 0) return;
-            imageIndex = ((i % imageList.length) + imageList.length) % imageList.length;
-            imgEl.style.opacity = 0;
-            setTimeout(()=> {
-              imgEl.src = imageList[imageIndex];
-              imgEl.alt = `Slide ${imageIndex+1}`;
-              imgEl.onload = () => { imgEl.style.opacity = 1; };
-              updateUI();
-            }, 70);
-          }
-
-          function startPresentation(){
-            if (imageList.length === 0) {
-              alert('Nejsou nastaveny žádné obrázky v imageList.');
-              return;
-            }
-            if (!isRunning) {
-              // nové spuštění prezentace: reset counters
-              isRunning = true;
-              playCount = 0;
-              remainingCycles = cycles;
-              imageIndex = 0;
-              showImage(imageIndex);
-            }
-            // start nebo resume audio
-            audio.currentTime = 0;
-            audio.play().then(()=> {
-              updateUI();
-            }).catch(err => {
-              console.warn('Playback error:', err);
-              alert('Pro přehrání hudby je potřeba kliknout (některé prohlížeče blokují autoplay).');
-            });
-          }
-
-          function pausePresentation(){
-            if (!isRunning) return;
-            audio.pause();
-            updateUI();
-          }
-
-          function stopPresentation(){
-            if (!isRunning) return;
-            audio.pause();
-            audio.currentTime = 0;
-            isRunning = false;
-            playCount = 0;
-            remainingCycles = cycles;
-            imageIndex = 0;
-            showImage(imageIndex);
-            updateUI();
-          }
-
-          // Po každém úplném dohrání zvuku: inc playCount -> další obrázek -> pokud stále zbývá cycles, přehraj znovu.
-          audio.addEventListener('ended', function(){
-            playCount++;
-            remainingCycles--;
-            // posuň obrázek po skončení přehrání
-            imageIndex = (imageIndex + 1) % imageList.length;
-            showImage(imageIndex);
-            updateUI();
-            // pokud chceme pokračovat (zbývají cykly), spusť znovu
-            if (isRunning && remainingCycles > 0) {
-              // malé zpoždění pro plynulost
-              setTimeout(()=> {
-                audio.currentTime = 0;
-                audio.play().catch(err => console.warn('Playback after ended failed:', err));
-              }, 250);
-            } else {
-              // skončíme
-              isRunning = false;
-              updateUI();
-            }
-          });
-
-          // ruční přechod na další obrázek (neovlivňuje playCount/cycles)
-          nextBtn.addEventListener('click', function(){
-            imageIndex = (imageIndex + 1) % imageList.length;
-            showImage(imageIndex);
-          });
-
-          // button bindings
-          startBtn.addEventListener('click', startPresentation);
-          pauseBtn.addEventListener('click', function(){
-            if (audio.paused) {
-              audio.play().catch(err => console.warn('Resume failed', err));
-            } else {
-              audio.pause();
-            }
-            updateUI();
-          });
-          stopBtn.addEventListener('click', stopPresentation);
-
-          // init UI
-          totalEl.innerText = imageList.length;
-          if (imageList.length > 0) showImage(0);
-          updateUI();
-
-          // expose for debugging
-          window.Presentation = {
-            audio, startPresentation, pausePresentation, stopPresentation, showImage,
-            get state(){ return { isRunning, playCount, imageIndex, remainingCycles }; }
-          };
-        })();
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal-node').forEach(el => observer.observe(el));
     </script>
-
-    <script async src="https://www.tiktok.com/embed.js"></script>
 </body>
 </html>

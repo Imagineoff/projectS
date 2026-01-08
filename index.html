@@ -103,26 +103,21 @@
             position:fixed;left:12px;top:0;height:100vh;width:84px;z-index:110;pointer-events:none;display:flex;align-items:center;justify-content:center
         }
         .bus-track-line{position:absolute;left:50%;transform:translateX(-50%);top:40px;bottom:40px;width:4px;background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border-radius:999px;opacity:0.7}
-        .bus-mover{position:absolute;left:50%;transform:translate(-50%,0);width:72px;will-change:transform}
+        .bus-mover{position:absolute;left:50%;width:72px;will-change:transform;transition:transform .08s linear;transform:translate(-50%,var(--bus-y,0px)) rotate(90deg);transform-origin:center center;pointer-events:none}
         .bus-graphic{width:72px;height:auto;display:block;border-radius:10px;filter:drop-shadow(0 12px 20px rgba(0,0,0,0.7))}
-        .bus-badge{position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);font-weight:700;color:var(--accent);font-size:13px;pointer-events:auto}
+        .bus-badge{position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%) rotate(-90deg);background:rgba(0,0,0,0.6);padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);font-weight:700;color:var(--accent);font-size:13px;pointer-events:auto;white-space:nowrap}
         @media (max-width:980px){
             .community-grid{grid-template-columns:1fr;align-items:start}
             .discord-embed iframe{height:360px}
         }
         @media (max-width:900px){
             .container{padding:18px 18px 140px}
-            .feature-grid{gap:18px}
-            .bus-tracker-wrapper{left:8px;width:64px}
-            .bus-mover{width:56px}
-            .bus-graphic{width:56px}
+            .bus-tracker-wrapper{display:flex;left:50%;top:auto;bottom:12px;width:64px;height:160px;transform:translateX(-50%);pointer-events:auto}
+            .bus-track-line{left:50%;top:12px;bottom:12px}
+            .bus-mover{width:54px}
+            .bus-graphic{width:54px}
             .bus-badge{left:calc(100% + 8px);font-size:12px;padding:5px 8px}
-        }
-        @media (max-width:420px){
-            .bus-tracker-wrapper{left:6px;width:56px}
-            .bus-mover{width:48px}
-            .bus-graphic{width:48px}
-            .bus-badge{left:calc(100% + 6px);font-size:11px;padding:4px 6px}
+            .feature-grid{gap:18px}
         }
     </style>
 </head>
@@ -232,5 +227,100 @@
             <div class="discord-embed">
                 <iframe src="https://discord.com/widget?id=822122237258760192&theme=dark" allowtransparency="true" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
             </div>
+        
+        <div style="height:40vh"></div>
+        <footer class="reveal-node">
+            <p>&copy; 2026 Kladenské Dílny. Všechna práva vyhrazena.</p>
+        
+        </footer>
+    </div>
+    <div class="bus-tracker-wrapper" aria-hidden="true">
+        <div class="bus-track-line"></div>
+        <div class="bus-mover" id="bus">
+            <img src="https://i.imgur.com/ahYsvMG.png" class="bus-graphic" alt="KD Bus">
+            <div class="bus-badge" id="bus-label">0%</div>
+        </div>
+    </div>
+    <script>
+        const bus = document.getElementById('bus');
+        const busLabel = document.getElementById('bus-label');
+        const wrapper = document.querySelector('.bus-tracker-wrapper');
+        function getScrollPercent(){
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight;
+            const winHeight = window.innerHeight;
+            const scrollPercent = scrollTop / (docHeight - winHeight || 1);
+            return Math.min(Math.max(scrollPercent, 0), 1);
+        }
+        function computeTrackBounds(){
+            const wrapperRect = wrapper.getBoundingClientRect();
+            const trackTop = 40;
+            const trackBottom = Math.max(wrapperRect.height - 40, trackTop + 10);
+            const busHeight = bus.offsetHeight || 72;
+            const maxTravel = Math.max(trackBottom - trackTop - busHeight, 0);
+            return {trackTop, maxTravel};
+        }
+        let lastScrollTime = performance.now();
+        let autoStart = performance.now();
+        let ticking = false;
+        function updateBusPosition(autoPercent=null){
+            const now = performance.now();
+            const {trackTop, maxTravel} = computeTrackBounds();
+            const scrollPercent = getScrollPercent();
+            const useScroll = (now - lastScrollTime) < 1400;
+            const clamped = useScroll ? scrollPercent : (autoPercent !== null ? autoPercent : scrollPercent);
+            const currentY = trackTop + maxTravel * clamped;
+            bus.style.setProperty('--bus-y', `${currentY}px`);
+            busLabel.innerText = Math.round(clamped * 100) + '%';
+        }
+        window.addEventListener('scroll', function(){
+            lastScrollTime = performance.now();
+            if(!ticking){
+                window.requestAnimationFrame(function(){updateBusPosition();ticking=false});
+                ticking = true;
+            }
+        }, {passive:true});
+        window.addEventListener('resize', function(){
+            updateBusPosition();
+        });
+        ['wheel','touchstart','touchmove'].forEach(ev => {
+            window.addEventListener(ev, ()=>{ lastScrollTime = performance.now(); }, {passive:true});
+        });
+        function autoLoop(t){
+            const tsec = (t - autoStart)/1000;
+            const speed = 0.6;
+            const autoPercent = 0.5 + 0.5 * Math.sin(tsec * speed * Math.PI * 2 * 0.2);
+            updateBusPosition(autoPercent);
+            requestAnimationFrame(autoLoop);
+        }
+        updateBusPosition();
+        requestAnimationFrame(autoLoop);
+        const promoText = document.getElementById('promo-text').innerText;
+        const copyBtn = document.getElementById('copy-promo');
+        copyBtn.addEventListener('click', async function(){
+            try{
+                await navigator.clipboard.writeText(promoText);
+                copyBtn.innerText = 'Zkopírováno';
+                setTimeout(()=>copyBtn.innerText='Kopírovat',1400);
+            }catch(e){
+                const input = document.createElement('input');
+                input.value = promoText;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                copyBtn.innerText = 'Zkopírováno';
+                setTimeout(()=>copyBtn.innerText='Kopírovat',1400);
+            }
+        });
+        const observerOptions = {threshold:0.08,rootMargin:"0px 0px -40px 0px"};
+        const observer = new IntersectionObserver((entries)=>{
+            entries.forEach(entry=>{
+                if(entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        },observerOptions);
+        document.querySelectorAll('.reveal-node').forEach(el=>observer.observe(el));
+    </script>
+    <script async src="https://www.tiktok.com/embed.js"></script>
 </body>
 </html>

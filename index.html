@@ -123,9 +123,48 @@
             .bus-graphic{width:54px}
             .feature-grid{gap:18px}
         }
-        /* styles for music gallery overlay */
-        #music-gallery { pointer-events: auto; }
-        #music-image-wrapper { box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+
+        /* Presentation section styles */
+        .presentation-card {
+            display:flex;
+            gap:20px;
+            align-items:center;
+            padding:18px;
+            border-radius:14px;
+            background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);
+            border:1px solid var(--border);
+        }
+        .presentation-image {
+            width:520px;
+            max-width:100%;
+            height:300px;
+            border-radius:12px;
+            overflow:hidden;
+            background:#070707;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .presentation-image img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+            opacity:0;
+            transition:opacity .45s ease;
+        }
+        .presentation-controls {
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+            justify-content:flex-start;
+            min-width:220px;
+        }
+        .presentation-controls .small {
+            padding:8px 12px;
+            font-size:13px;
+        }
+        .muted-note { color:var(--text-muted); font-size:13px; margin-top:8px; }
     </style>
 </head>
 <body>
@@ -143,6 +182,7 @@
                 <a href="#" class="nav-link">Roblox</a>
             </nav>
         </header>
+
         <section class="hero">
             <h1 class="reveal-node">Tvoje cesta.<br>Náš standard.</h1>
             <p class="reveal-node">Kladenské dílny přináší revoluci do Roblox dopravy. Precizní modely, skvělá komunita a inovativní systémy.</p>
@@ -150,6 +190,35 @@
                 <a href="#about" class="btn-cta">Zjistit více</a>
             </div>
         </section>
+
+        <!-- ========== NOVÁ SEKCE: Prezentace (hudba -> obrázky) ========== -->
+        <div class="section-title" id="presentation">
+            <h2>Prezentace — hudba & obrázky</h2>
+        </div>
+
+        <div class="bento-card reveal-node presentation-card" role="region" aria-label="Prezentace hudby a obrázků">
+            <div class="presentation-image" aria-hidden="false">
+                <img id="presentation-image" src="" alt="Prezentace slide">
+            </div>
+            <div class="presentation-controls">
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button id="start-presentation" class="btn-cta">Spustit prezentaci</button>
+                    <button id="pause-presentation" class="btn-cta small" style="background:transparent;border:1px solid rgba(255,255,255,0.04)">Pauza</button>
+                    <button id="stop-presentation" class="btn-cta small" style="background:transparent;border:1px solid rgba(255,255,255,0.04)">Zastavit</button>
+                    <button id="next-slide" class="btn-cta small" style="background:transparent;border:1px solid rgba(255,255,255,0.04)">Další obrázek</button>
+                </div>
+                <div class="muted-note">
+                    Každé **úplné dohrání** skladby změní obrázek (1 play = 1 obrázek). První kliknutím na "Spustit prezentaci" dovolíš prohlížeči spustit audio.
+                </div>
+                <div style="margin-top:8px;color:var(--text-muted);font-size:13px">
+                    Stav: <span id="presentation-status">stopped</span>
+                    &nbsp;•&nbsp; Nahráno: <span id="presentation-playcount">0</span>
+                    &nbsp;•&nbsp; Obrázek: <span id="presentation-index">0</span>/<span id="presentation-total">0</span>
+                </div>
+            </div>
+        </div>
+        <!-- ========== KONEC SEKCE PREZENTACE ========== -->
+
         <section id="about" class="feature-grid">
             <div class="bento-card reveal-node">
                 <h3>Kvalita</h3>
@@ -171,6 +240,7 @@
                 <p>Férové ceny, žádné skryté poplatky a přímá komunikace s vývojáři. To je Kladenský Standard.</p>
             </div>
         </section>
+
         <div class="section-title">
             <h2>KD Coin</h2>
         </div>
@@ -186,7 +256,9 @@
                 <a href="#stocks" class="btn-cta">Investovat</a>
             </div>
         </div>
+
         <div style="height:18px"></div>
+
         <div class="section-title">
             <h2>Daily promokód</h2>
         </div>
@@ -199,7 +271,9 @@
                 <button id="copy-promo" class="btn-cta" aria-label="Kopírovat promokód" style="pointer-events:auto">Kopírovat</button>
             </div>
         </div>
+
         <div style="height:18px"></div>
+
         <div class="section-title" id="stocks">
             <h2>Akcie</h2>
         </div>
@@ -227,7 +301,9 @@
                 </div>
             </div>
         </div>
+
         <div style="height:18px"></div>
+
         <div class="section-title">
             <h2>Komunita</h2>
         </div>
@@ -235,23 +311,12 @@
             <div class="discord-embed">
                 <iframe src="https://discord.com/widget?id=822122237258760192&theme=dark" allowtransparency="true" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
             </div>
-        
+
         <div style="height:40vh"></div>
         <footer class="reveal-node">
             <p>&copy; 2026 Kladenské Dílny. Všechna práva vyhrazena.</p>
-        
-        </footer>
-    </div>
 
-    <!-- Music gallery overlay: 1 play = 1 obrázek -->
-    <div id="music-gallery" style="position:fixed;right:20px;bottom:20px;z-index:120;pointer-events:auto">
-      <div id="music-image-wrapper" style="width:320px;height:180px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(6px);background:#0a0a0a;display:flex;align-items:center;justify-content:center;">
-        <img id="music-image" src="" alt="Music slide" style="width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .45s ease">
-      </div>
-      <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
-        <button id="music-play-btn" class="btn-cta" aria-pressed="false" style="padding:8px 12px">Přehrát hudbu</button>
-        <button id="music-next-btn" class="btn-cta" style="padding:8px 12px">Další obrázek</button>
-      </div>
+        </footer>
     </div>
 
     <div class="bus-tracker-wrapper" aria-hidden="true">
@@ -265,24 +330,12 @@
     <script>
         /* ============================
            KONFIGURACE AKCIÍ (Upravte tady)
-           - Pro každou akcii nastavte:
-                up: true  => zeleně s šipkou ▲ (růst)
-                up: false => červeně s šipkou ▼ (pokles)
-           - percent: číslo (např. 2.5 nebo -1.2). Pokud je percent === 0, zobrazí se "0%" a neutrální vzhled (–).
            ============================ */
-
         const stockConfig = [
-            { up: true,  percent: 2.4 },   // Akcie 1  -> změňte true/false
-            { up: false, percent: -0.8 },  // Akcie dva -> změňte true/false
-            { up: true,  percent: 0 }      // Akcie 3  -> true/false (0% bude neutral)
+            { up: true,  percent: 2.4 },
+            { up: false, percent: -0.8 },
+            { up: true,  percent: 0 }
         ];
-
-        /* ============================
-           Kód, který aplikuje konfiguraci na DOM
-           - Nemusíte nic měnit níže. Pokud byste chtěli měnit barvu za běhu,
-             použijte například v konzoli: setStock(1, true, 3.2);
-           ============================ */
-
         function applyStockConfig(){
             const items = document.querySelectorAll('.stock-item');
             items.forEach(item => {
@@ -291,19 +344,13 @@
                 const changeEl = item.querySelector('.stock-change');
                 const arrowEl = changeEl.querySelector('.arrow');
                 const pctEl = changeEl.querySelector('.percent');
-
-                // Clean previous classes
                 changeEl.classList.remove('up','down','neutral');
-
                 const pct = Number(cfg.percent) || 0;
-
                 if (pct === 0) {
-                    // neutral state
                     changeEl.classList.add('neutral');
                     arrowEl.textContent = '–';
                     pctEl.textContent = '0%';
                 } else {
-                    // decide direction by cfg.up boolean
                     if (cfg.up === true) {
                         changeEl.classList.add('up');
                         arrowEl.textContent = '▲';
@@ -311,24 +358,19 @@
                         changeEl.classList.add('down');
                         arrowEl.textContent = '▼';
                     }
-                    // Ensure percent value is shown as positive number with sign
                     const display = Math.abs(pct).toFixed(1).replace(/\.0$/, '') + '%';
                     pctEl.textContent = display;
                 }
             });
         }
-
-        // utility: nastavení jednotlivé akcie runtime (index 0-based)
         function setStock(index, upBoolean, percentValue=0){
             stockConfig[index] = { up: Boolean(upBoolean), percent: Number(percentValue) || 0 };
             applyStockConfig();
         }
-        // expose to window for quick console tweaks
         window.setStock = setStock;
         window.stockConfig = stockConfig;
 
-        /* ========== zbytek skriptů (původní funkce stránky) ========== */
-
+        /* ========== BUS TRACKER & ANIMACE (původní) ========== */
         const bus = document.getElementById('bus');
         const busLabel = document.getElementById('bus-label');
         const wrapper = document.querySelector('.bus-tracker-wrapper');
@@ -365,24 +407,6 @@
         window.addEventListener('touchstart', userInteracted, {passive:true});
         window.addEventListener('touchmove', userInteracted, {passive:true});
         window.addEventListener('resize', ()=>{ setBusPositionByPercent(getScrollPercent()); });
-        const promoText = document.getElementById('promo-text').innerText;
-        const copyBtn = document.getElementById('copy-promo');
-        copyBtn.addEventListener('click', async function(){
-            try{
-                await navigator.clipboard.writeText(promoText);
-                copyBtn.innerText = 'Zkopírováno';
-                setTimeout(()=>copyBtn.innerText='Kopírovat',1400);
-            }catch(e){
-                const input = document.createElement('input');
-                input.value = promoText;
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand('copy');
-                document.body.removeChild(input);
-                copyBtn.innerText = 'Zkopírováno';
-                setTimeout(()=>copyBtn.innerText='Kopírovat',1400);
-            }
-        });
         function loop(ts){
             const autoPercent = 0.5 + 0.45 * Math.sin(ts/1000 * 0.6);
             const scrollPercent = getScrollPercent();
@@ -404,135 +428,172 @@
             });
         },observerOptions);
         document.querySelectorAll('.reveal-node').forEach(el=>observer.observe(el));
+        document.addEventListener('DOMContentLoaded', function(){ applyStockConfig(); });
 
-        // Apply stocks on DOMContentLoaded so elements exist
-        document.addEventListener('DOMContentLoaded', function(){
-            applyStockConfig();
-        });
+        /* ============================
+           MUSIC / PRESENTATION SCRIPT
+           - 1 PLAY = 1 OBRÁZEK
+           - Sekce s tlačítky (Start / Pauza / Stop / Další)
+           ============================ */
+        (function(){
+          // --------- NASTAVENÍ ----------
+          // 1) URL mp3 - nahraď svou cestou (CORS pokud je mimo doménu)
+          const musicSrc = 'https://example.com/your-music-file.mp3';
 
-    </script>
+          // 2) seznam obrázků (počet obrázků = počet slideů)
+          const imageList = [
+            'https://i.imgur.com/yourImage1.jpg',
+            'https://i.imgur.com/yourImage2.jpg',
+            'https://i.imgur.com/yourImage3.jpg'
+          ];
 
-    <!-- MUSIC SCRIPT: 1 play = 1 obrázek -->
-    <script>
-    (function(){
-      // ---------- KONFIGURACE ----------
-      // Nahraď musicSrc URL skutečným souborem (podpora CORS pokud je mimo tvůj server)
-      const musicSrc = 'https://example.com/your-music-file.mp3';
-      // Seznam obrázků — dej sem tolik odkazů, kolik chcete "plays"
-      const imageList = [
-        'https://i.imgur.com/1.jpg',
-        'https://i.imgur.com/2.jpg',
-        'https://i.imgur.com/3.jpg'
-      ];
-      // Chování: 'ended' => změna po úplném dohrání; 'play' => změna hned při startu
-      const advanceOn = 'ended';
-      // ---------------------------------
+          // 3) cycles = kolikrát celkem přehrát hudbu (každé ended++ = další obrázek)
+          // Pokud chceš jen jednou projít přes všechny obrázky, nastav cycles = imageList.length
+          // Pokud chceš aby se přehrálo víc než počet obrázků, nastav cycles = větší číslo; obrázky se budou opakovat v cyklu.
+          const cycles = imageList.length; // změň pokud chceš jinak
+          // --------------------------------
 
-      const playBtn = document.getElementById('music-play-btn');
-      const nextBtn = document.getElementById('music-next-btn');
-      const imgEl = document.getElementById('music-image');
+          // elements
+          const startBtn = document.getElementById('start-presentation');
+          const pauseBtn = document.getElementById('pause-presentation');
+          const stopBtn = document.getElementById('stop-presentation');
+          const nextBtn = document.getElementById('next-slide');
+          const imgEl = document.getElementById('presentation-image');
+          const statusEl = document.getElementById('presentation-status');
+          const playcountEl = document.getElementById('presentation-playcount');
+          const indexEl = document.getElementById('presentation-index');
+          const totalEl = document.getElementById('presentation-total');
 
-      // Audio objekt (skrytě)
-      const audio = new Audio();
-      audio.src = musicSrc;
-      audio.preload = 'auto';
-      audio.loop = false; // pokud potřebuješ smyčku, uprav níže i logiku počítání
-      audio.crossOrigin = 'anonymous';
+          // state
+          let isRunning = false;
+          let playCount = 0;      // počet úplných přehrání (ended events)
+          let imageIndex = 0;     // aktuální obrázek (0-based)
+          let remainingCycles = cycles;
 
-      let playCount = 0;    // kolikrát hudba dohrála (plné přehrání)
-      let imageIndex = 0;
-      const totalImages = imageList.length;
+          // audio
+          const audio = new Audio();
+          audio.src = musicSrc;
+          audio.preload = 'auto';
+          audio.loop = false; // loopujeme manuálně podle cycles
+          audio.crossOrigin = 'anonymous';
 
-      // Preload obrázků
-      imageList.forEach(src => {
-        const i = new Image();
-        i.src = src;
-      });
+          // Preload images
+          imageList.forEach(s => { const i=new Image(); i.src=s; });
 
-      // Zobraz obrázek s fade efektem
-      function showImage(index){
-        if (totalImages === 0) return;
-        index = ((index % totalImages) + totalImages) % totalImages;
-        const src = imageList[index];
-        imgEl.style.opacity = 0;
-        setTimeout(()=> {
-          imgEl.src = src;
-          imgEl.alt = `Slide ${index+1}`;
-          // když je načtený, fade in
-          imgEl.onload = () => { imgEl.style.opacity = 1; };
-        }, 90);
-      }
-
-      // Volá se, když jedno "play" (dohraje) proběhne
-      function onOnePlayCompleted(){
-        playCount++;
-        imageIndex = imageIndex + 1;
-        if (imageIndex >= totalImages){
-          // chování po dosažení konce obrázků:
-          // současná volba: smyčka (vrátí na začátek)
-          imageIndex = imageIndex % totalImages;
-          // pokud chceš po vyčerpání zastavit, místo výše napiš:
-          // audio.pause(); playBtn.disabled = true;
-        }
-        showImage(imageIndex);
-        // debug
-        console.log('Hudba dohrála. PlayCount:', playCount, 'Nový obrázek index:', imageIndex);
-      }
-
-      // Připojení eventu podle advanceOn
-      if (advanceOn === 'ended'){
-        audio.addEventListener('ended', onOnePlayCompleted);
-      } else if (advanceOn === 'play'){
-        // pozor: play se volá i při resume; pokud nechceš double-count, přidej ochranu
-        let lastPlayTime = 0;
-        audio.addEventListener('play', function(){
-          const now = Date.now();
-          if (now - lastPlayTime > 300) {
-            lastPlayTime = now;
-            onOnePlayCompleted();
+          function updateUI(){
+            statusEl.innerText = isRunning ? (audio.paused ? 'paused' : 'playing') : 'stopped';
+            playcountEl.innerText = playCount;
+            indexEl.innerText = (imageIndex % imageList.length) + 1;
+            totalEl.innerText = imageList.length;
+            startBtn.disabled = isRunning && !audio.paused;
+            pauseBtn.disabled = !isRunning;
+            stopBtn.disabled = !isRunning;
           }
-        });
-      }
 
-      // Play/pause tlačítko (uživatelské gesto)
-      playBtn.addEventListener('click', async function(){
-        try {
-          if (audio.paused) {
-            await audio.play();
-            playBtn.innerText = 'Pozastavit hudbu';
-            playBtn.setAttribute('aria-pressed','true');
-          } else {
+          function showImage(i){
+            if (imageList.length === 0) return;
+            imageIndex = ((i % imageList.length) + imageList.length) % imageList.length;
+            imgEl.style.opacity = 0;
+            setTimeout(()=> {
+              imgEl.src = imageList[imageIndex];
+              imgEl.alt = `Slide ${imageIndex+1}`;
+              imgEl.onload = () => { imgEl.style.opacity = 1; };
+              updateUI();
+            }, 70);
+          }
+
+          function startPresentation(){
+            if (imageList.length === 0) {
+              alert('Nejsou nastaveny žádné obrázky v imageList.');
+              return;
+            }
+            if (!isRunning) {
+              // nové spuštění prezentace: reset counters
+              isRunning = true;
+              playCount = 0;
+              remainingCycles = cycles;
+              imageIndex = 0;
+              showImage(imageIndex);
+            }
+            // start nebo resume audio
+            audio.currentTime = 0;
+            audio.play().then(()=> {
+              updateUI();
+            }).catch(err => {
+              console.warn('Playback error:', err);
+              alert('Pro přehrání hudby je potřeba kliknout (některé prohlížeče blokují autoplay).');
+            });
+          }
+
+          function pausePresentation(){
+            if (!isRunning) return;
             audio.pause();
-            playBtn.innerText = 'Přehrát hudbu';
-            playBtn.setAttribute('aria-pressed','false');
+            updateUI();
           }
-        } catch (err) {
-          console.warn('Playback failed:', err);
-          playBtn.innerText = 'Klikni ještě jednou';
-        }
-      });
 
-      // Manuální přeskočení obrázku
-      nextBtn.addEventListener('click', function(){
-        imageIndex = (imageIndex + 1) % totalImages;
-        showImage(imageIndex);
-      });
+          function stopPresentation(){
+            if (!isRunning) return;
+            audio.pause();
+            audio.currentTime = 0;
+            isRunning = false;
+            playCount = 0;
+            remainingCycles = cycles;
+            imageIndex = 0;
+            showImage(imageIndex);
+            updateUI();
+          }
 
-      // Inicializace: ukaž první obrázek
-      if (totalImages > 0) showImage(0);
+          // Po každém úplném dohrání zvuku: inc playCount -> další obrázek -> pokud stále zbývá cycles, přehraj znovu.
+          audio.addEventListener('ended', function(){
+            playCount++;
+            remainingCycles--;
+            // posuň obrázek po skončení přehrání
+            imageIndex = (imageIndex + 1) % imageList.length;
+            showImage(imageIndex);
+            updateUI();
+            // pokud chceme pokračovat (zbývají cykly), spusť znovu
+            if (isRunning && remainingCycles > 0) {
+              // malé zpoždění pro plynulost
+              setTimeout(()=> {
+                audio.currentTime = 0;
+                audio.play().catch(err => console.warn('Playback after ended failed:', err));
+              }, 250);
+            } else {
+              // skončíme
+              isRunning = false;
+              updateUI();
+            }
+          });
 
-      // Exponuj API pro ladění v konzoli
-      window.KDMusic = {
-        audio,
-        showImage,
-        imageList,
-        get state(){ return { playCount, imageIndex, totalImages, paused: audio.paused }; },
-        setImageIndex(i){ imageIndex = i; showImage(imageIndex); }
-      };
+          // ruční přechod na další obrázek (neovlivňuje playCount/cycles)
+          nextBtn.addEventListener('click', function(){
+            imageIndex = (imageIndex + 1) % imageList.length;
+            showImage(imageIndex);
+          });
 
-      // Pokud chceš detekovat loopované audio (audio.loop === true), 'ended' se nevyvolá.
-      // Nabízím jednoduchý fallback: pokud chceš počítat opakování i při loop=true, můžeme sledovat timeupdate a detekovat reset currentTime -> dej vědět.
-    })();
+          // button bindings
+          startBtn.addEventListener('click', startPresentation);
+          pauseBtn.addEventListener('click', function(){
+            if (audio.paused) {
+              audio.play().catch(err => console.warn('Resume failed', err));
+            } else {
+              audio.pause();
+            }
+            updateUI();
+          });
+          stopBtn.addEventListener('click', stopPresentation);
+
+          // init UI
+          totalEl.innerText = imageList.length;
+          if (imageList.length > 0) showImage(0);
+          updateUI();
+
+          // expose for debugging
+          window.Presentation = {
+            audio, startPresentation, pausePresentation, stopPresentation, showImage,
+            get state(){ return { isRunning, playCount, imageIndex, remainingCycles }; }
+          };
+        })();
     </script>
 
     <script async src="https://www.tiktok.com/embed.js"></script>
